@@ -46,3 +46,5 @@ export type APPError =
   | WithMessage<"user-action-error">
   | WithMessage<"content-too-large-error">
   | WithMessage<"unknown-error">;
+
+export type ParseError = (error: any) => APPError;

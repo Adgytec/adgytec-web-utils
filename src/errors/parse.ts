@@ -2,6 +2,8 @@ import { APIError } from "./apiError";
 import { BaseError } from "./baseError";
 import type { ParseError } from "./types";
 
+const defaultRetryAfter = 1000; // in ms
+
 export const parseError: ParseError = (error) => {
   // Check for network-level errors.
   if (
@@ -72,10 +74,24 @@ export const parseError: ParseError = (error) => {
         };
 
       case 429:
+        const retryAfterHeader = error.response.headers.get("retry-after");
+        let retryAfterMs = defaultRetryAfter;
+
+        if (retryAfterHeader) {
+          const parsedSeconds = parseInt(retryAfterHeader, 10);
+          if (!isNaN(parsedSeconds)) {
+            retryAfterMs = parsedSeconds * 1000;
+          } else {
+            const date = new Date(retryAfterHeader);
+            if (!isNaN(date.getTime())) {
+              retryAfterMs = Math.max(0, date.getTime() - Date.now());
+            }
+          }
+        }
+
         return {
           errorCode: "too-many-requests-error",
-          retryAfter:
-            Number(error.response.headers.get("retry-after")) * 1000 || 1000,
+          retryAfter: retryAfterMs,
           message: "Too many requests. Try again later.",
         };
 

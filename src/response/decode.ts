@@ -1,7 +1,7 @@
 import { APIError, newAPIErrorResponse } from "../errors";
 import type { DecodeAPIResponse } from "./types";
 
-export const decodeAPIResponse: DecodeAPIResponse = async (res) => {
+export const decodeAPIResponse: DecodeAPIResponse = async (res, schema) => {
   const text = await res.text();
 
   if (!text) {
@@ -11,7 +11,7 @@ export const decodeAPIResponse: DecodeAPIResponse = async (res) => {
     throw new APIError(res, { message: "Empty error response from server" });
   }
 
-  let payload;
+  let payload: unknown;
   try {
     payload = JSON.parse(text);
   } catch (e) {
@@ -21,8 +21,21 @@ export const decodeAPIResponse: DecodeAPIResponse = async (res) => {
     throw new APIError(res, { message });
   }
 
+  // ✅ Success path
   if (res.ok) {
-    return payload;
+    if (!schema) {
+      // caller explicitly expects no response value
+      return null;
+    }
+
+    const parsed = schema.safeParse(payload);
+    if (!parsed.success) {
+      throw new APIError(res, {
+        message: "Invalid response shape from server",
+      });
+    }
+
+    return parsed.data;
   }
 
   const errRes = newAPIErrorResponse(payload);

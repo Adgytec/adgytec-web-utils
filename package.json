@@ -40,5 +40,8 @@
     "type": "git",
     "url": "git+https://github.com/Adgytec/adgytec-web-utils.git"
   },
-  "homepage": "https://github.com/Adgytec/adgytec-web-utils/#/README.md"
+  "homepage": "https://github.com/Adgytec/adgytec-web-utils/#/README.md",
+  "dependencies": {
+    "zod": "^4.3.5"
+  }
 }

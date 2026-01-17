@@ -8,8 +8,10 @@ import {
 export const newAPIErrorResponse: NewAPIErrorResponse = (res) => {
   const result = APIErrorResponseSchema.safeParse(res);
 
-  // if both fields are missing treat as server bug
-  if (!result.success || (!result.data.message && !result.data.fieldErrors)) {
+  const missingErrorInfo =
+    result.success && !result.data.message && !result.data.fieldErrors;
+
+  if (!result.success || missingErrorInfo) {
     return {
       message: "Unexpected server error",
     };

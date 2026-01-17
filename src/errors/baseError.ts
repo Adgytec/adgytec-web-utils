@@ -1,5 +1,1 @@
-export class BaseError extends Error {
-  constructor(...args: ConstructorParameters<ErrorConstructor>) {
-    super(...args);
-  }
-}
+export class BaseError extends Error {}

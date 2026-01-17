@@ -51,7 +51,7 @@ export async function decodeAPIResponse<T>(
     const parsed = schema.safeParse(payload);
     if (!parsed.success) {
       throw new APIError(res, {
-        message: "Invalid response shape from server",
+        message: `Invalid response shape from server: ${parsed.error.message}`,
       });
     }
 

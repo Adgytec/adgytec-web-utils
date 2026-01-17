@@ -9,7 +9,7 @@ export const APIErrorResponseSchema = z.object({
 
 export type APIErrorResponse = z.infer<typeof APIErrorResponseSchema>;
 
-export type NewApiErrorResponse = (res: unknown) => APIErrorResponse;
+export type NewAPIErrorResponse = (res: unknown) => APIErrorResponse;
 
 export type ErrorCode =
   | "server-error"

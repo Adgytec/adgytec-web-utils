@@ -2,10 +2,10 @@ import { BaseError } from "./baseError";
 import {
   APIErrorResponseSchema,
   type APIErrorResponse,
-  type NewApiErrorResponse,
+  type NewAPIErrorResponse,
 } from "./types";
 
-export const newAPIErrorResponse: NewApiErrorResponse = (res) => {
+export const newAPIErrorResponse: NewAPIErrorResponse = (res) => {
   const result = APIErrorResponseSchema.safeParse(res);
 
   // if both fields are missing treat as server bug

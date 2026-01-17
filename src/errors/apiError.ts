@@ -1,4 +1,9 @@
-import { APIErrorResponseSchema, type NewApiErrorResponse } from "./types";
+import { BaseError } from "./baseError";
+import {
+  APIErrorResponseSchema,
+  type APIErrorResponse,
+  type NewApiErrorResponse,
+} from "./types";
 
 export const newAPIErrorResponse: NewApiErrorResponse = (res) => {
   const result = APIErrorResponseSchema.safeParse(res);
@@ -12,3 +17,16 @@ export const newAPIErrorResponse: NewApiErrorResponse = (res) => {
 
   return result.data;
 };
+
+export class APIError extends BaseError {
+  data: APIErrorResponse;
+  response: Response;
+
+  constructor(response: Response, data: APIErrorResponse) {
+    super(data.message ?? "API Error");
+
+    this.name = "API Error";
+    this.data = data;
+    this.response = response;
+  }
+}

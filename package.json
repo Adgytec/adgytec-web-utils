@@ -1,7 +1,7 @@
 {
   "name": "@adgytec/adgytec-web-utils",
   "private": false,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -40,5 +40,8 @@
     "type": "git",
     "url": "git+https://github.com/Adgytec/adgytec-web-utils.git"
   },
-  "homepage": "https://github.com/Adgytec/adgytec-web-utils/#/README.md"
+  "homepage": "https://github.com/Adgytec/adgytec-web-utils/#/README.md",
+  "dependencies": {
+    "zod": "^4.3.5"
+  }
 }

@@ -1,14 +1,34 @@
 import { APIError, newAPIErrorResponse } from "../errors";
-import type { DecodeAPIResponse } from "./types";
+import { z } from "zod";
 
-export const decodeAPIResponse: DecodeAPIResponse = async (res, schema) => {
+// overloaded functions
+export function decodeAPIResponse<T>(
+  res: Response,
+  schema: z.ZodSchema<T>,
+): Promise<T>;
+
+export function decodeAPIResponse(res: Response): Promise<null>;
+
+export async function decodeAPIResponse<T>(
+  res: Response,
+  schema?: z.ZodSchema<T>,
+): Promise<T | null> {
   const text = await res.text();
 
+  // Empty body
   if (!text) {
     if (res.ok) {
+      if (schema) {
+        throw new APIError(res, {
+          message: "Expected response body but received empty response",
+        });
+      }
       return null;
     }
-    throw new APIError(res, { message: "Empty error response from server" });
+
+    throw new APIError(res, {
+      message: "Empty error response from server",
+    });
   }
 
   let payload: unknown;
@@ -40,4 +60,4 @@ export const decodeAPIResponse: DecodeAPIResponse = async (res, schema) => {
 
   const errRes = newAPIErrorResponse(payload);
   throw new APIError(res, errRes);
-};
+}

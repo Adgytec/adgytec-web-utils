@@ -23,3 +23,26 @@ export type ErrorCode =
   | "user-action-error"
   | "content-too-large-error"
   | "unknown-error";
+
+type WithMessage<T extends Exclude<ErrorCode, "form-field-error">> = {
+  errorCode: T;
+  message: string;
+};
+
+export type APPError =
+  | WithMessage<"server-error">
+  | WithMessage<"network-error">
+  | (WithMessage<"too-many-requests-error"> & {
+      retryAfter: number;
+    })
+  | WithMessage<"authentication-error">
+  | WithMessage<"authorization-error">
+  | WithMessage<"not-found-error">
+  | WithMessage<"method-not-allowed-error">
+  | {
+      errorCode: "form-field-error";
+      fieldErrors: Record<string, string | string[]>;
+    }
+  | WithMessage<"user-action-error">
+  | WithMessage<"content-too-large-error">
+  | WithMessage<"unknown-error">;

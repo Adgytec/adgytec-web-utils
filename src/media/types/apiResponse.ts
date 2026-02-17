@@ -3,7 +3,7 @@ import z from "zod";
 const MultipartPartUploadSchema = z.object({
   presignPut: z.url(),
   partNumber: z.int().positive().lte(10000),
-  partSzie: z.int().positive().gt(0),
+  partSize: z.int().positive().gt(0),
 });
 
 const MultipartSchema = z.object({

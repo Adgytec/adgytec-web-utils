@@ -10,3 +10,8 @@ export type UploadItems = (
   items: UploadDetails[],
   lifecycleHandler: LifecycleHandler,
 ) => Promise<void>;
+
+export type MultipartUploadedPartDetails = {
+  etag: string;
+  partNumber: number;
+};

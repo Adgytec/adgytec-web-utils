@@ -2,13 +2,15 @@ import type { MultipartUploadedPartDetails } from "./types";
 
 export class MultipartUtil {
   #id: string;
+  #blob: Blob;
   #response: MultipartUploadedPartDetails[];
   #parts: Set<number>;
   #totalParts: number;
   #completeURL: string;
 
-  constructor(id: string, completeURL: string, totalParts: number) {
+  constructor(id: string, blob: Blob, completeURL: string, totalParts: number) {
     this.#id = id;
+    this.#blob = blob;
     this.#response = [];
     this.#parts = new Set();
     this.#totalParts = totalParts;
@@ -21,6 +23,10 @@ export class MultipartUtil {
 
   get completeURL(): string {
     return this.#completeURL;
+  }
+
+  get blob(): Blob {
+    return this.#blob;
   }
 
   add(itemRes: MultipartUploadedPartDetails) {

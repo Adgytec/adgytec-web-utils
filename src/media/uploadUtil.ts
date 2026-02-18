@@ -205,7 +205,7 @@ export class Upload {
     multipartObj: MultipartUtil,
     retryCount: number = 0,
   ) {
-    if (!multipartObj.canComplete) {
+    if (!multipartObj.tryStartComplete()) {
       return;
     }
 
@@ -214,6 +214,8 @@ export class Upload {
 
       this.#lifecycleHandler.itemUploaded(multipartObj.id);
     } catch (err) {
+      multipartObj.resetComplete();
+
       const parsedErr = parseError(err);
       console.error("failed to complete multipart upload: ", parsedErr);
 
@@ -274,9 +276,7 @@ export class Upload {
         yield async () => {
           await this.#multipartUpload(multipartObj, partInfo);
 
-          if (multipartObj.canComplete) {
-            await this.#completeMultipartUpload(multipartObj);
-          }
+          await this.#completeMultipartUpload(multipartObj);
         };
 
         startByte = endByte;
@@ -311,9 +311,7 @@ export class Upload {
               task.retryCount,
             );
 
-            if (task.multipartObj.canComplete) {
-              await this.#completeMultipartUpload(task.multipartObj, 0);
-            }
+            await this.#completeMultipartUpload(task.multipartObj, 0);
           };
           break;
         case "multipart-complete":

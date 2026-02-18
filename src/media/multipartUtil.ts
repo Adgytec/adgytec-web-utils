@@ -1,14 +1,20 @@
 import type { MultipartUploadedPartDetails } from "./types";
 
 export class MultipartUtil {
+  #id: string;
   #response: MultipartUploadedPartDetails[];
   #parts: Set<number>;
   #totalParts: number;
 
-  constructor(totalParts: number) {
+  constructor(id: string, totalParts: number) {
+    this.#id = id;
     this.#response = [];
     this.#parts = new Set();
     this.#totalParts = totalParts;
+  }
+
+  get id(): string {
+    return this.#id;
   }
 
   add(itemRes: MultipartUploadedPartDetails) {
@@ -24,11 +30,19 @@ export class MultipartUtil {
     return this.#parts.has(partNumber);
   }
 
-  list(): MultipartUploadedPartDetails[] {
+  get list(): MultipartUploadedPartDetails[] {
     return this.#response;
   }
 
-  allPartsUploaded(): boolean {
+  get canComplete(): boolean {
     return this.#parts.size === this.#totalParts;
+  }
+
+  get totalPartsCount(): number {
+    return this.#totalParts;
+  }
+
+  get uploadedPartsCount(): number {
+    return this.#parts.size;
   }
 }

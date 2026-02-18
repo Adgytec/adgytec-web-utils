@@ -6,24 +6,10 @@ export const newUploadDetails: NewUploadDetails = (mediaInfo, apiResponse) => {
     throw new BaseError("media item and response id mismatch");
   }
 
-  if (apiResponse.uploadType === "singlepart") {
-    return {
-      file: mediaInfo.file,
-      size: mediaInfo.size,
-      mediaID: apiResponse.mediaID,
-      uploadType: "singlepart",
-      presignPut: apiResponse.presignPut,
-      singlepartSuccessCallback: apiResponse.singlepartSuccessCallback,
-    };
-  }
-
   return {
+    ...apiResponse,
     file: mediaInfo.file,
     size: mediaInfo.size,
-    mediaID: apiResponse.mediaID,
-    uploadType: "multipart",
-    multipartPresignPart: apiResponse.multipartPresignPart,
-    multipartSuccessCallback: apiResponse.multipartSuccessCallback,
   };
 };
 

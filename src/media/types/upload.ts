@@ -32,6 +32,7 @@ type MultipartPartUploadRetry = {
   type: "multipart-part-upload";
   uploadURL: string;
   multipartObj: MultipartUtil;
+  partNumber: number;
   blob: Blob;
   startByte: number;
   endByte: number;

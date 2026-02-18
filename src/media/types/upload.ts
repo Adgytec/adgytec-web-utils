@@ -1,4 +1,5 @@
 import type { MultipartUtil } from "../multipartUtil";
+import type { SinglepartUtil } from "../singlepartUtil";
 import type { LifecycleHandler } from "./lifecycle";
 import type { UploadDetails } from "./uploadDetails";
 
@@ -19,30 +20,29 @@ export type MultipartUploadedPartDetails = {
 
 type SinglepartUploadRetry = {
   type: "singlepart-upload";
-  id: string;
-  uploadURL: string;
-  blob: Blob;
+  singlepartObj: SinglepartUtil;
 };
 
 type SinglepartCompleteRetry = {
   type: "singlepart-complete";
-  id: string;
-  successCallbackURL: string;
+  singlepartObj: SinglepartUtil;
 };
 
-type MultipartPartUploadRetry = {
-  type: "multipart-part-upload";
+type MultipartPartInfo = {
   uploadURL: string;
-  multipartObj: MultipartUtil;
   partNumber: number;
-  blob: Blob;
   startByte: number;
   endByte: number;
 };
 
+type MultipartPartUploadRetry = {
+  type: "multipart-part-upload";
+  multipartObj: MultipartUtil;
+  partInfo: MultipartPartInfo;
+};
+
 type MultipartCompleteRetry = {
   type: "multipart-complete";
-  successCallbackURL: string;
   multipartObj: MultipartUtil;
 };
 

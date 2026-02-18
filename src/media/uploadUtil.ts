@@ -68,6 +68,7 @@ export class Upload {
       }
 
       await Promise.all(running);
+      this.#lifecycleHandler.completed();
     } catch (err) {
       const parsedErr = parseError(err);
       console.error("failed to upload items: ", parsedErr);
@@ -153,7 +154,7 @@ export class Upload {
       console.error("failed to upload multipart part: ", parsedErr);
 
       if (this.#canRetry(retryCount)) {
-        this.#lifecycleHandler.mulitpartPartuploadRetrying(
+        this.#lifecycleHandler.multipartPartuploadRetrying(
           multipartObj.id,
           partInfo.partNumber,
         );

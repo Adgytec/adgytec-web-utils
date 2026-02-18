@@ -9,7 +9,7 @@ export type UploadLimits = {
 };
 
 export type UploadItem = (
-  items: UploadDetails,
+  item: UploadDetails,
   lifecycleHandler: LifecycleHandler,
   uploadLimits?: UploadLimits,
 ) => Promise<void>;

@@ -265,5 +265,49 @@ export class Upload {
         startByte = endByte;
       }
     }
+
+    // handle retries
+    while (!this.#retryQueue.isEmpty()) {
+      const task = this.#retryQueue.dequeue()!;
+
+      switch (task.type) {
+        case "singlepart-upload":
+          yield async () => {
+            await this.#singlepartUpload(task.singlepartObj, task.retryCount);
+
+            await this.#completeSinglepartUpload(task.singlepartObj, 0);
+          };
+          break;
+        case "singlepart-complete":
+          yield async () => {
+            await this.#completeSinglepartUpload(
+              task.singlepartObj,
+              task.retryCount,
+            );
+          };
+          break;
+        case "multipart-part-upload":
+          yield async () => {
+            await this.#multipartUpload(
+              task.multipartObj,
+              task.partInfo,
+              task.retryCount,
+            );
+
+            if (task.multipartObj.canComplete) {
+              await this.#completeMultipartUpload(task.multipartObj, 0);
+            }
+          };
+          break;
+        case "multipart-complete":
+          yield async () => {
+            await this.#completeMultipartUpload(
+              task.multipartObj,
+              task.retryCount,
+            );
+          };
+          break;
+      }
+    }
   }
 }

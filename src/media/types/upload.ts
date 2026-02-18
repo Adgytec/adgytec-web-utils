@@ -28,7 +28,7 @@ type SinglepartCompleteRetry = {
   singlepartObj: SinglepartUtil;
 };
 
-type MultipartPartInfo = {
+export type MultipartPartInfo = {
   uploadURL: string;
   partNumber: number;
   startByte: number;

@@ -4,10 +4,12 @@ import { decodeAPIResponse } from "../response";
 import { MultipartUtil } from "./multipartUtil";
 import type {
   LifecycleHandler,
+  MultipartPartInfo,
   MultipartUploadedPartDetails,
   Retry,
   UploadDetails,
 } from "./types";
+import { SinglepartUtil } from "./singlepartUtil";
 
 export class Upload {
   #items: UploadDetails[];
@@ -47,6 +49,72 @@ export class Upload {
     });
   }
 
+  async #singlepartUpload(
+    singlepartObj: SinglepartUtil,
+    retryCount: number = 0,
+  ) {
+    try {
+      const res = await this.#blobUpload(
+        singlepartObj.uploadURL,
+        singlepartObj.blob,
+      );
+      if (!res.ok) {
+        throw new BaseError("can't upload file blob");
+      }
+    } catch (err) {
+      console.error("failed to upload item: ", parseError(err));
+      this.#retryQueue.enqueue({
+        type: "singlepart-upload",
+        retryCount: retryCount + 1,
+        singlepartObj: singlepartObj,
+      });
+    }
+  }
+
+  async #multipartUpload(
+    multipartObj: MultipartUtil,
+    partInfo: MultipartPartInfo,
+    retryCount: number = 0,
+  ) {
+    if (multipartObj.contains(partInfo.partNumber)) {
+      return;
+    }
+
+    try {
+      const res = await this.#blobUpload(
+        partInfo.uploadURL,
+        multipartObj.blob.slice(partInfo.startByte, partInfo.endByte),
+      );
+      if (!res.ok) {
+        throw new BaseError("can't upload file blob");
+      }
+
+      const etag = res.headers.get("ETag");
+      if (!etag) {
+        throw new BaseError("missing etag");
+      }
+
+      multipartObj.add({
+        partNumber: partInfo.partNumber,
+        etag: etag,
+      });
+
+      this.#lifecycleHandler.multipartPartUploaded(
+        multipartObj.id,
+        multipartObj.uploadedPartsCount,
+        multipartObj.totalPartsCount,
+      );
+    } catch (err) {
+      console.error("failed to upload multipart part: ", parseError(err));
+      this.#retryQueue.enqueue({
+        type: "multipart-part-upload",
+        retryCount: retryCount + 1,
+        multipartObj: multipartObj,
+        partInfo: partInfo,
+      });
+    }
+  }
+
   async #completeUpload(
     completeURL: string,
     body?: MultipartUploadedPartDetails[],
@@ -68,96 +136,34 @@ export class Upload {
     await decodeAPIResponse(apiRes);
   }
 
-  async #completeSinglepartUpload(callback: string, retryCount: number = 0) {
+  async #completeSinglepartUpload(
+    singlepartObj: SinglepartUtil,
+    retryCount: number = 0,
+  ) {
     try {
-      await this.#completeUpload(callback);
+      await this.#completeUpload(singlepartObj.completeURL);
     } catch (err) {
       console.error("failed to complete singlepart upload: ", parseError(err));
       this.#retryQueue.enqueue({
         type: "singlepart-complete",
         retryCount: retryCount + 1,
-        successCallbackURL: callback,
+        singlepartObj: singlepartObj,
       });
     }
   }
 
   async #completeMultipartUpload(
-    callback: string,
     multipartObj: MultipartUtil,
     retryCount: number = 0,
   ) {
     try {
-      await this.#completeUpload(callback, multipartObj.list());
+      await this.#completeUpload(multipartObj.completeURL, multipartObj.list);
     } catch (err) {
       console.error("failed to complete multipart upload: ", parseError(err));
       this.#retryQueue.enqueue({
         type: "multipart-complete",
         retryCount: retryCount + 1,
-        successCallbackURL: callback,
         multipartObj: multipartObj,
-      });
-    }
-  }
-
-  async #singlepartUpload(
-    uploadURL: string,
-    blob: Blob,
-    retryCount: number = 0,
-  ) {
-    try {
-      const res = await this.#blobUpload(uploadURL, blob);
-      if (!res.ok) {
-        throw new BaseError("can't upload file blob");
-      }
-    } catch (err) {
-      console.error("failed to upload item: ", parseError(err));
-      this.#retryQueue.enqueue({
-        type: "singlepart-upload",
-        retryCount: retryCount + 1,
-        uploadURL: uploadURL,
-        blob: blob,
-      });
-    }
-  }
-
-  async #multipartUpload(
-    multipartObj: MultipartUtil,
-    partNumber: number,
-    uploadURL: string,
-    blob: Blob,
-    startByte: number,
-    endByte: number,
-    retryCount: number = 0,
-  ) {
-    try {
-      const res = await this.#blobUpload(
-        uploadURL,
-        blob.slice(startByte, endByte),
-      );
-      if (!res.ok) {
-        throw new BaseError("can't upload file blob");
-      }
-
-      const etag = res.headers.get("ETag");
-      if (!etag) {
-        throw new BaseError("missing etag");
-      }
-
-      multipartObj.add({
-        partNumber: partNumber,
-        etag: etag,
-      });
-    } catch (err) {
-      console.error("failed to upload multipart part: ", parseError(err));
-      this.#retryQueue.enqueue({
-        type: "multipart-part-upload",
-        retryCount: retryCount + 1,
-        uploadURL: uploadURL,
-        multipartObj: multipartObj,
-        partNumber: partNumber,
-        blob: blob,
-        startByte: startByte,
-        endByte: endByte,
       });
     }
   }
@@ -165,15 +171,28 @@ export class Upload {
   async *#generateTasks(): AsyncGenerator<() => Promise<void>> {
     for (const item of this.#items) {
       if (item.uploadType === "singlepart") {
+        const singlepartObj = new SinglepartUtil(
+          item.mediaID,
+          item.file,
+          item.presignPut,
+          item.singlepartSuccessCallback,
+        );
+
         yield async () => {
-          await this.#singlepartUpload(item.presignPut, item.file);
-          await this.#completeSinglepartUpload(item.singlepartSuccessCallback);
+          await this.#singlepartUpload(singlepartObj);
+
+          await this.#completeSinglepartUpload(singlepartObj);
         };
         continue;
       }
 
       // multipart
-      const multipartObj = new MultipartUtil(item.multipartPresignPart.length);
+      const multipartObj = new MultipartUtil(
+        item.mediaID,
+        item.file,
+        item.multipartSuccessCallback,
+        item.multipartPresignPart.length,
+      );
 
       // file slice byte range
       let startByte = 0;
@@ -182,21 +201,18 @@ export class Upload {
       for (const partDetails of item.multipartPresignPart) {
         endByte += partDetails.partSize;
 
-        yield async () => {
-          await this.#multipartUpload(
-            multipartObj,
-            partDetails.partNumber,
-            partDetails.presignPut,
-            item.file,
-            startByte,
-            endByte,
-          );
+        const partInfo: MultipartPartInfo = {
+          partNumber: partDetails.partNumber,
+          uploadURL: partDetails.presignPut,
+          startByte: startByte,
+          endByte: endByte,
+        };
 
-          if (multipartObj.allPartsUploaded()) {
-            await this.#completeMultipartUpload(
-              item.multipartSuccessCallback,
-              multipartObj,
-            );
+        yield async () => {
+          await this.#multipartUpload(multipartObj, partInfo);
+
+          if (multipartObj.canComplete) {
+            await this.#completeMultipartUpload(multipartObj);
           }
         };
 

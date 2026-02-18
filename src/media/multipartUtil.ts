@@ -5,16 +5,22 @@ export class MultipartUtil {
   #response: MultipartUploadedPartDetails[];
   #parts: Set<number>;
   #totalParts: number;
+  #completeURL: string;
 
-  constructor(id: string, totalParts: number) {
+  constructor(id: string, completeURL: string, totalParts: number) {
     this.#id = id;
     this.#response = [];
     this.#parts = new Set();
     this.#totalParts = totalParts;
+    this.#completeURL = completeURL;
   }
 
   get id(): string {
     return this.#id;
+  }
+
+  get completeURL(): string {
+    return this.#completeURL;
   }
 
   add(itemRes: MultipartUploadedPartDetails) {

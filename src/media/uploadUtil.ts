@@ -56,23 +56,18 @@ export class Upload {
   async init() {
     this.#lifecycleHandler.init(this.#items);
 
-    try {
-      const running = new Set<Promise<void>>();
-      for await (const task of this.#generateTasks()) {
-        const p = task().finally(() => running.delete(p));
-        running.add(p);
+    const running = new Set<Promise<void>>();
+    for await (const task of this.#generateTasks()) {
+      const p = task().finally(() => running.delete(p));
+      running.add(p);
 
-        if (running.size >= this.#concurrentUploads) {
-          await Promise.race(running);
-        }
+      if (running.size >= this.#concurrentUploads) {
+        await Promise.race(running);
       }
-
-      await Promise.all(running);
-      this.#lifecycleHandler.completed();
-    } catch (err) {
-      const parsedErr = parseError(err);
-      console.error("failed to upload items: ", parsedErr);
     }
+
+    await Promise.all(running);
+    this.#lifecycleHandler.completed();
   }
 
   async #blobUpload(uploadURL: string, blob: Blob): Promise<Response> {
@@ -97,7 +92,6 @@ export class Upload {
       }
     } catch (err) {
       const parsedErr = parseError(err);
-      console.error("failed to upload item: ", parsedErr);
 
       if (this.#canRetry(retryCount)) {
         this.#lifecycleHandler.uploadRetrying(singlepartObj.id);
@@ -151,7 +145,6 @@ export class Upload {
       );
     } catch (err) {
       const parsedErr = parseError(err);
-      console.error("failed to upload multipart part: ", parsedErr);
 
       if (this.#canRetry(retryCount)) {
         this.#lifecycleHandler.multipartPartuploadRetrying(
@@ -207,7 +200,6 @@ export class Upload {
       this.#lifecycleHandler.itemUploaded(singlepartObj.id);
     } catch (err) {
       const parsedErr = parseError(err);
-      console.error("failed to complete singlepart upload: ", parsedErr);
 
       if (this.#canRetry(retryCount)) {
         this.#lifecycleHandler.uploadRetrying(singlepartObj.id);
@@ -242,7 +234,6 @@ export class Upload {
       multipartObj.resetComplete();
 
       const parsedErr = parseError(err);
-      console.error("failed to complete multipart upload: ", parsedErr);
 
       if (this.#canRetry(retryCount)) {
         this.#lifecycleHandler.uploadRetrying(multipartObj.id);

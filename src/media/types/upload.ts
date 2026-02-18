@@ -19,12 +19,14 @@ export type MultipartUploadedPartDetails = {
 
 type SinglepartUploadRetry = {
   type: "singlepart-upload";
+  id: string;
   uploadURL: string;
   blob: Blob;
 };
 
 type SinglepartCompleteRetry = {
   type: "singlepart-complete";
+  id: string;
   successCallbackURL: string;
 };
 

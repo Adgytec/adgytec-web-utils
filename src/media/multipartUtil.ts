@@ -7,6 +7,7 @@ export class MultipartUtil {
   #parts: Set<number>;
   #totalParts: number;
   #completeURL: string;
+  #failed: boolean;
 
   constructor(id: string, blob: Blob, completeURL: string, totalParts: number) {
     this.#id = id;
@@ -15,6 +16,15 @@ export class MultipartUtil {
     this.#parts = new Set();
     this.#totalParts = totalParts;
     this.#completeURL = completeURL;
+    this.#failed = false;
+  }
+
+  get failed(): boolean {
+    return this.#failed;
+  }
+
+  fail() {
+    this.#failed = true;
   }
 
   get id(): string {
@@ -47,7 +57,7 @@ export class MultipartUtil {
   }
 
   get canComplete(): boolean {
-    return this.#parts.size === this.#totalParts;
+    return !this.failed && this.#parts.size === this.#totalParts;
   }
 
   get totalPartsCount(): number {

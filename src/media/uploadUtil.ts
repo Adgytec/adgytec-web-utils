@@ -38,6 +38,10 @@ export class Upload {
     this.#retryQueue = new Queue();
   }
 
+  #canRetry(currentCount: number): boolean {
+    return currentCount < this.#retryLimit;
+  }
+
   async init() {
     this.#lifecycleHandler.init(this.#items);
   }
@@ -62,12 +66,19 @@ export class Upload {
         throw new BaseError("can't upload file blob");
       }
     } catch (err) {
-      console.error("failed to upload item: ", parseError(err));
-      this.#retryQueue.enqueue({
-        type: "singlepart-upload",
-        retryCount: retryCount + 1,
-        singlepartObj: singlepartObj,
-      });
+      const parsedErr = parseError(err);
+      console.error("failed to upload item: ", parsedErr);
+
+      if (this.#canRetry(retryCount)) {
+        this.#lifecycleHandler.uploadRetrying(singlepartObj.id);
+        this.#retryQueue.enqueue({
+          type: "singlepart-upload",
+          retryCount: retryCount + 1,
+          singlepartObj: singlepartObj,
+        });
+      } else {
+        this.#lifecycleHandler.failed(singlepartObj.id, parsedErr);
+      }
     }
   }
 
@@ -76,7 +87,7 @@ export class Upload {
     partInfo: MultipartPartInfo,
     retryCount: number = 0,
   ) {
-    if (multipartObj.contains(partInfo.partNumber)) {
+    if (multipartObj.failed || multipartObj.contains(partInfo.partNumber)) {
       return;
     }
 
@@ -105,13 +116,25 @@ export class Upload {
         multipartObj.totalPartsCount,
       );
     } catch (err) {
-      console.error("failed to upload multipart part: ", parseError(err));
-      this.#retryQueue.enqueue({
-        type: "multipart-part-upload",
-        retryCount: retryCount + 1,
-        multipartObj: multipartObj,
-        partInfo: partInfo,
-      });
+      const parsedErr = parseError(err);
+      console.error("failed to upload multipart part: ", parsedErr);
+
+      if (this.#canRetry(retryCount)) {
+        this.#lifecycleHandler.mulitpartPartuploadRetrying(
+          multipartObj.id,
+          partInfo.partNumber,
+        );
+
+        this.#retryQueue.enqueue({
+          type: "multipart-part-upload",
+          retryCount: retryCount + 1,
+          multipartObj: multipartObj,
+          partInfo: partInfo,
+        });
+      } else {
+        multipartObj.fail();
+        this.#lifecycleHandler.failed(multipartObj.id, parsedErr);
+      }
     }
   }
 
@@ -142,13 +165,22 @@ export class Upload {
   ) {
     try {
       await this.#completeUpload(singlepartObj.completeURL);
+
+      this.#lifecycleHandler.itemUploaded(singlepartObj.id);
     } catch (err) {
-      console.error("failed to complete singlepart upload: ", parseError(err));
-      this.#retryQueue.enqueue({
-        type: "singlepart-complete",
-        retryCount: retryCount + 1,
-        singlepartObj: singlepartObj,
-      });
+      const parsedErr = parseError(err);
+      console.error("failed to complete singlepart upload: ", parsedErr);
+
+      if (this.#canRetry(retryCount)) {
+        this.#lifecycleHandler.uploadRetrying(singlepartObj.id);
+        this.#retryQueue.enqueue({
+          type: "singlepart-complete",
+          retryCount: retryCount + 1,
+          singlepartObj: singlepartObj,
+        });
+      } else {
+        this.#lifecycleHandler.failed(singlepartObj.id, parsedErr);
+      }
     }
   }
 
@@ -156,15 +188,29 @@ export class Upload {
     multipartObj: MultipartUtil,
     retryCount: number = 0,
   ) {
+    if (!multipartObj.canComplete) {
+      return;
+    }
+
     try {
       await this.#completeUpload(multipartObj.completeURL, multipartObj.list);
+
+      this.#lifecycleHandler.itemUploaded(multipartObj.id);
     } catch (err) {
-      console.error("failed to complete multipart upload: ", parseError(err));
-      this.#retryQueue.enqueue({
-        type: "multipart-complete",
-        retryCount: retryCount + 1,
-        multipartObj: multipartObj,
-      });
+      const parsedErr = parseError(err);
+      console.error("failed to complete multipart upload: ", parsedErr);
+
+      if (this.#canRetry(retryCount)) {
+        this.#lifecycleHandler.uploadRetrying(multipartObj.id);
+        this.#retryQueue.enqueue({
+          type: "multipart-complete",
+          retryCount: retryCount + 1,
+          multipartObj: multipartObj,
+        });
+      } else {
+        multipartObj.fail();
+        this.#lifecycleHandler.failed(multipartObj.id, parsedErr);
+      }
     }
   }
 

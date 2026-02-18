@@ -3,14 +3,21 @@ import type { SinglepartUtil } from "../singlepartUtil";
 import type { LifecycleHandler } from "./lifecycle";
 import type { UploadDetails } from "./uploadDetails";
 
+export type UploadLimits = {
+  concurrentUploads: number;
+  retryLimit: number;
+};
+
 export type UploadItem = (
   items: UploadDetails,
   lifecycleHandler: LifecycleHandler,
+  uploadLimits?: UploadLimits,
 ) => Promise<void>;
 
 export type UploadItems = (
   items: UploadDetails[],
   lifecycleHandler: LifecycleHandler,
+  uploadLimits?: UploadLimits,
 ) => Promise<void>;
 
 export type MultipartUploadedPartDetails = {

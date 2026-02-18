@@ -8,8 +8,14 @@ import type {
   MultipartUploadedPartDetails,
   Retry,
   UploadDetails,
+  UploadLimits,
 } from "./types";
 import { SinglepartUtil } from "./singlepartUtil";
+
+const defaultUploadLimit: UploadLimits = {
+  concurrentUploads: 4,
+  retryLimit: 3,
+};
 
 export class Upload {
   #items: UploadDetails[];
@@ -18,23 +24,15 @@ export class Upload {
   #retryLimit: number;
   #retryQueue: Queue<Retry>;
 
-  constructor(uploadItems: UploadDetails[], handler: LifecycleHandler);
   constructor(
     uploadItems: UploadDetails[],
     handler: LifecycleHandler,
-    concurrentUploads: number,
-    retryLimit: number,
-  );
-  constructor(
-    uploadItems: UploadDetails[],
-    handler: LifecycleHandler,
-    concurrentUploads: number = 4,
-    retryLimit: number = 3,
+    limits: UploadLimits = defaultUploadLimit,
   ) {
     this.#items = uploadItems;
     this.#lifecycleHandler = handler;
-    this.#concurrentUploads = concurrentUploads;
-    this.#retryLimit = retryLimit;
+    this.#concurrentUploads = limits.concurrentUploads;
+    this.#retryLimit = limits.retryLimit;
     this.#retryQueue = new Queue();
   }
 

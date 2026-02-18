@@ -44,6 +44,23 @@ export class Upload {
 
   async init() {
     this.#lifecycleHandler.init(this.#items);
+
+    try {
+      const running = new Set<Promise<void>>();
+      for await (const task of this.#generateTasks()) {
+        const p = task().finally(() => running.delete(p));
+        running.add(p);
+
+        if (running.size >= this.#concurrentUploads) {
+          await Promise.race(running);
+        }
+      }
+
+      await Promise.all(running);
+    } catch (err) {
+      const parsedErr = parseError(err);
+      console.error("failed to upload items: ", parsedErr);
+    }
   }
 
   async #blobUpload(uploadURL: string, blob: Blob): Promise<Response> {

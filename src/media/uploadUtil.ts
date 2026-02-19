@@ -312,6 +312,7 @@ export class Upload {
       }
     }
 
+    // TODO: will handle retries in better way in next pr
     // handle retries
     while (this.#activeTasks > 0 || !this.#retryQueue.isEmpty()) {
       if (!this.#retryQueue.isEmpty()) {

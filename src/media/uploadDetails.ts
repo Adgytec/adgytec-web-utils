@@ -23,15 +23,19 @@ export const newUploadsDetails: NewUploadsDetails = (
     );
   }
 
-  // ids are uuidv7
-  const sortedInfos = [...mediaInfos].sort((a, b) => a.id.localeCompare(b.id));
-
-  // ids are uuidv7
-  const sortedResponses = [...apiResponses].sort((a, b) =>
-    a.mediaID.localeCompare(b.mediaID),
+  const apiResponseMap = new Map(
+    apiResponses.map((response) => [response.mediaID, response]),
   );
 
-  return sortedInfos.map((mediaInfo, index) =>
-    newUploadDetails(mediaInfo, sortedResponses[index]),
-  );
+  return mediaInfos.map((mediaInfo) => {
+    const apiResponse = apiResponseMap.get(mediaInfo.id);
+    if (!apiResponse) {
+      // This case should not happen if lengths are equal and IDs are unique,
+      // but it's good practice to handle it defensively.
+      throw new BaseError(
+        `Could not find a matching API response for media info with id: ${mediaInfo.id}`,
+      );
+    }
+    return newUploadDetails(mediaInfo, apiResponse);
+  });
 };

@@ -58,12 +58,12 @@ export class MultipartUtil {
     return this.#response.slice().sort((a, b) => a.partNumber - b.partNumber);
   }
 
-  get #canComplete(): boolean {
+  get canComplete(): boolean {
     return !this.failed && this.#parts.size === this.#totalParts;
   }
 
   tryStartComplete(): boolean {
-    if (this.#complete || !this.#canComplete) return false;
+    if (this.#complete || !this.canComplete) return false;
 
     this.#complete = true;
     return true;

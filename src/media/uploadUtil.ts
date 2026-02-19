@@ -96,6 +96,7 @@ export class Upload {
       }
 
       singlepartObj.allowComplete();
+      await this.#completeSinglepartUpload(singlepartObj);
     } catch (err) {
       const parsedErr = parseError(err);
 
@@ -149,6 +150,9 @@ export class Upload {
         multipartObj.uploadedPartsCount,
         multipartObj.totalPartsCount,
       );
+
+      if (!multipartObj.canComplete) return;
+      await this.#completeMultipartUpload(multipartObj);
     } catch (err) {
       const parsedErr = parseError(err);
 
@@ -274,8 +278,6 @@ export class Upload {
 
         yield async () => {
           await this.#singlepartUpload(singlepartObj);
-
-          await this.#completeSinglepartUpload(singlepartObj);
         };
         continue;
       }
@@ -304,8 +306,6 @@ export class Upload {
 
         yield async () => {
           await this.#multipartUpload(multipartObj, partInfo);
-
-          await this.#completeMultipartUpload(multipartObj);
         };
 
         startByte = endByte;
@@ -321,8 +321,6 @@ export class Upload {
           case "singlepart-upload":
             yield async () => {
               await this.#singlepartUpload(task.singlepartObj, task.retryCount);
-
-              await this.#completeSinglepartUpload(task.singlepartObj, 0);
             };
             break;
           case "singlepart-complete":
@@ -340,8 +338,6 @@ export class Upload {
                 task.partInfo,
                 task.retryCount,
               );
-
-              await this.#completeMultipartUpload(task.multipartObj, 0);
             };
             break;
           case "multipart-complete":

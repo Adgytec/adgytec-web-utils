@@ -92,7 +92,9 @@ export class Upload {
         singlepartObj.blob,
       );
       if (!res.ok) {
-        throw new BaseError("can't upload file blob");
+        throw new BaseError(
+          `Failed to upload file blob for media item ${singlepartObj.id}`,
+        );
       }
 
       singlepartObj.allowComplete();
@@ -132,7 +134,9 @@ export class Upload {
         multipartObj.blob.slice(partInfo.startByte, partInfo.endByte),
       );
       if (!res.ok) {
-        throw new BaseError("can't upload file blob");
+        throw new BaseError(
+          `Failed to upload part ${partInfo.partNumber} for media item ${multipartObj.id}`,
+        );
       }
 
       const etag = res.headers.get("ETag");

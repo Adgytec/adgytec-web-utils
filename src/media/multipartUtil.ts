@@ -55,7 +55,7 @@ export class MultipartUtil {
   }
 
   get list(): MultipartUploadedPartDetails[] {
-    return this.#response;
+    return this.#response.slice().sort((a, b) => a.partNumber - b.partNumber);
   }
 
   get #canComplete(): boolean {

@@ -81,6 +81,10 @@ export class Upload {
     singlepartObj: SinglepartUtil,
     retryCount: number = 0,
   ) {
+    if (singlepartObj.canComplete) {
+      return;
+    }
+
     try {
       this.#activeTasks++;
       const res = await this.#blobUpload(
@@ -90,6 +94,8 @@ export class Upload {
       if (!res.ok) {
         throw new BaseError("can't upload file blob");
       }
+
+      singlepartObj.allowComplete();
     } catch (err) {
       const parsedErr = parseError(err);
 
@@ -193,6 +199,10 @@ export class Upload {
     singlepartObj: SinglepartUtil,
     retryCount: number = 0,
   ) {
+    if (!singlepartObj.canComplete) {
+      return;
+    }
+
     try {
       this.#activeTasks++;
       await this.#completeUpload(singlepartObj.completeURL);

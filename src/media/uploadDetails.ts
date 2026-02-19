@@ -24,10 +24,10 @@ export const newUploadsDetails: NewUploadsDetails = (
   }
 
   // ids are uuidv7
-  const sortedInfos = mediaInfos.sort((a, b) => a.id.localeCompare(b.id));
+  const sortedInfos = [...mediaInfos].sort((a, b) => a.id.localeCompare(b.id));
 
   // ids are uuidv7
-  const sortedResponses = apiResponses.sort((a, b) =>
+  const sortedResponses = [...apiResponses].sort((a, b) =>
     a.mediaID.localeCompare(b.mediaID),
   );
 

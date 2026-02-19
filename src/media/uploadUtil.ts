@@ -193,8 +193,8 @@ export class Upload {
         completeURL: string,
         body?: MultipartUploadedPartDetails[]
     ) {
-        let reqBody = undefined;
-        let headers = undefined;
+        let reqBody: BodyInit | undefined = undefined;
+        let headers: HeadersInit | undefined = undefined;
         if (body) {
             reqBody = JSON.stringify({
                 partsInfo: body,

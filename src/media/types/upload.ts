@@ -4,61 +4,61 @@ import type { LifecycleHandler } from "./lifecycle";
 import type { UploadDetails } from "./uploadDetails";
 
 export type UploadLimits = {
-  concurrentUploads: number;
-  retryLimit: number;
+    concurrentUploads: number;
+    retryLimit: number;
 };
 
 export type UploadItem = (
-  item: UploadDetails,
-  lifecycleHandler: LifecycleHandler,
-  uploadLimits?: UploadLimits,
+    item: UploadDetails,
+    lifecycleHandler: LifecycleHandler,
+    uploadLimits?: UploadLimits
 ) => Promise<void>;
 
 export type UploadItems = (
-  items: UploadDetails[],
-  lifecycleHandler: LifecycleHandler,
-  uploadLimits?: UploadLimits,
+    items: UploadDetails[],
+    lifecycleHandler: LifecycleHandler,
+    uploadLimits?: UploadLimits
 ) => Promise<void>;
 
 export type MultipartUploadedPartDetails = {
-  etag: string;
-  partNumber: number;
+    etag: string;
+    partNumber: number;
 };
 
 type SinglepartUploadRetry = {
-  type: "singlepart-upload";
-  singlepartObj: SinglepartUtil;
+    type: "singlepart-upload";
+    singlepartObj: SinglepartUtil;
 };
 
 type SinglepartCompleteRetry = {
-  type: "singlepart-complete";
-  singlepartObj: SinglepartUtil;
+    type: "singlepart-complete";
+    singlepartObj: SinglepartUtil;
 };
 
 export type MultipartPartInfo = {
-  uploadURL: string;
-  partNumber: number;
-  startByte: number;
-  endByte: number;
+    uploadURL: string;
+    partNumber: number;
+    startByte: number;
+    endByte: number;
 };
 
 type MultipartPartUploadRetry = {
-  type: "multipart-part-upload";
-  multipartObj: MultipartUtil;
-  partInfo: MultipartPartInfo;
+    type: "multipart-part-upload";
+    multipartObj: MultipartUtil;
+    partInfo: MultipartPartInfo;
 };
 
 type MultipartCompleteRetry = {
-  type: "multipart-complete";
-  multipartObj: MultipartUtil;
+    type: "multipart-complete";
+    multipartObj: MultipartUtil;
 };
 
 type RetryAction =
-  | SinglepartUploadRetry
-  | SinglepartCompleteRetry
-  | MultipartPartUploadRetry
-  | MultipartCompleteRetry;
+    | SinglepartUploadRetry
+    | SinglepartCompleteRetry
+    | MultipartPartUploadRetry
+    | MultipartCompleteRetry;
 
 export type Retry = RetryAction & {
-  retryCount: number;
+    retryCount: number;
 };

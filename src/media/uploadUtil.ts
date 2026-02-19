@@ -193,7 +193,7 @@ export class Upload {
       method: "POST",
       body: reqBody,
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json",
       },
     });
     await decodeAPIResponse(apiRes);

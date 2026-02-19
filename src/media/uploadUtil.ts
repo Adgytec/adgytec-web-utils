@@ -153,7 +153,7 @@ export class Upload {
       const parsedErr = parseError(err);
 
       if (this.#canRetry(retryCount)) {
-        this.#lifecycleHandler.multipartPartuploadRetrying(
+        this.#lifecycleHandler.multipartPartUploadRetrying(
           multipartObj.id,
           partInfo.partNumber,
         );

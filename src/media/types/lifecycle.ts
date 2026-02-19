@@ -12,5 +12,5 @@ export type LifecycleHandler = {
     totalPartsCount: number,
   ) => void;
   uploadRetrying: (id: string) => void;
-  multipartPartuploadRetrying: (id: string, partNumber: number) => void;
+  multipartPartUploadRetrying: (id: string, partNumber: number) => void;
 };

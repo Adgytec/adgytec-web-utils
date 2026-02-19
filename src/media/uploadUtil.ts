@@ -12,11 +12,11 @@ import type {
 } from "./types";
 import { SinglepartUtil } from "./singlepartUtil";
 import {
-    HTTPPost,
-    HTTPPut,
-    HTTPHeaderContentType,
-    HTTPHeaderContentTypeApplicationJSON,
-    HTTPRequestCredentialsInclude,
+    HTTP_POST,
+    HTTP_PUT,
+    HTTP_HEADER_CONTENT_TYPE,
+    HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
+    HTTP_REQUEST_CREDENTIALS_INCLUDE,
 } from "../constants";
 
 const defaultUploadLimit: UploadLimits = {
@@ -79,7 +79,7 @@ export class Upload {
 
     async #blobUpload(uploadURL: string, blob: Blob): Promise<Response> {
         return await fetch(uploadURL, {
-            method: HTTPPut,
+            method: HTTP_PUT,
             body: blob,
         });
     }
@@ -201,15 +201,16 @@ export class Upload {
             });
 
             headers = {
-                [HTTPHeaderContentType]: HTTPHeaderContentTypeApplicationJSON,
+                [HTTP_HEADER_CONTENT_TYPE]:
+                    HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
             };
         }
 
         const apiRes = await fetch(completeURL, {
-            method: HTTPPost,
+            method: HTTP_POST,
             body: reqBody,
             headers: headers,
-            credentials: HTTPRequestCredentialsInclude,
+            credentials: HTTP_REQUEST_CREDENTIALS_INCLUDE,
         });
         await decodeAPIResponse(apiRes);
     }

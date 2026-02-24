@@ -211,8 +211,7 @@ export class Upload {
         }
 
         if (this.#languageTag) {
-            if (!headers) headers = {};
-
+            headers = headers || {};
             headers[HTTP_HEADER_USER_LOCALE] = this.#languageTag;
         }
 

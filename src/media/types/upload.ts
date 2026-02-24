@@ -11,13 +11,15 @@ export type UploadLimits = {
 export type UploadItem = (
     item: UploadDetails,
     lifecycleHandler: LifecycleHandler,
-    uploadLimits?: UploadLimits
+    uploadLimits?: UploadLimits,
+    languageTag?: string
 ) => Promise<void>;
 
 export type UploadItems = (
     items: UploadDetails[],
     lifecycleHandler: LifecycleHandler,
-    uploadLimits?: UploadLimits
+    uploadLimits?: UploadLimits,
+    languageTag?: string
 ) => Promise<void>;
 
 export type MultipartUploadedPartDetails = {

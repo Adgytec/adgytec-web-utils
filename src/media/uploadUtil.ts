@@ -17,6 +17,7 @@ import {
     HTTP_HEADER_CONTENT_TYPE,
     HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
     HTTP_REQUEST_CREDENTIALS_INCLUDE,
+    HTTP_HEADER_USER_LOCALE,
 } from "../constants";
 
 const defaultUploadLimit: UploadLimits = {
@@ -32,11 +33,13 @@ export class Upload {
     #retryQueue: Queue<Retry>;
     #retryNotifier?: () => void;
     #activeTasks: number;
+    #languageTag?: string;
 
     constructor(
         uploadItems: UploadDetails[],
         handler: LifecycleHandler,
-        limits: UploadLimits = defaultUploadLimit
+        limits: UploadLimits = defaultUploadLimit,
+        languageTag?: string
     ) {
         this.#items = uploadItems;
         this.#lifecycleHandler = handler;
@@ -44,6 +47,7 @@ export class Upload {
         this.#retryLimit = limits.retryLimit;
         this.#retryQueue = new Queue();
         this.#activeTasks = 0;
+        this.#languageTag = languageTag;
     }
 
     #canRetry(currentCount: number): boolean {
@@ -204,6 +208,12 @@ export class Upload {
                 [HTTP_HEADER_CONTENT_TYPE]:
                     HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
             };
+        }
+
+        if (this.#languageTag) {
+            if (!headers) headers = {};
+
+            headers[HTTP_HEADER_USER_LOCALE] = this.#languageTag;
         }
 
         const apiRes = await fetch(completeURL, {

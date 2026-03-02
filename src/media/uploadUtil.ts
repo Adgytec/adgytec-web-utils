@@ -68,7 +68,12 @@ export class Upload {
             }
         }
 
+        // wait for all initial task to complete
         await Promise.all(running);
+
+        // complete retry action
+        await this.#handleRetries();
+
         this.#lifecycleHandler.completed();
     }
 
@@ -314,5 +319,52 @@ export class Upload {
                 startByte = endByte;
             }
         }
+    }
+
+    async #handleRetries() {
+        const running = new Set<Promise<void>>();
+        while (!this.#retryQueue.isEmpty()) {
+            const task = this.#retryQueue.dequeue()!;
+            var p: Promise<void>;
+
+            // promise assignment
+            switch (task.type) {
+                case "singlepart-upload":
+                    p = this.#singlepartUpload(
+                        task.singlepartObj,
+                        task.retryCount
+                    );
+                    break;
+                case "singlepart-complete":
+                    p = this.#completeSinglepartUpload(
+                        task.singlepartObj,
+                        task.retryCount
+                    );
+                    break;
+                case "multipart-part-upload":
+                    p = this.#multipartUpload(
+                        task.multipartObj,
+                        task.partInfo,
+                        task.retryCount
+                    );
+                    break;
+                case "multipart-complete":
+                    p = this.#completeMultipartUpload(
+                        task.multipartObj,
+                        task.retryCount
+                    );
+                    break;
+            }
+
+            running.add(p);
+            if (running.size >= this.#concurrentUploads) {
+                await Promise.race(running);
+            }
+        }
+
+        await Promise.all(running);
+
+        // check for further retries
+        if (!this.#retryQueue.isEmpty()) await this.#handleRetries();
     }
 }

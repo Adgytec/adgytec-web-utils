@@ -25,11 +25,20 @@
         "preview": "vite preview",
         "release": "npm run build && npm publish --public"
     },
+    "peerDependencies": {
+        "@datastructures-js/queue": ">=4.3.0",
+        "uuid": ">=13.0.0",
+        "zod": ">=4.3.6"
+    },
     "devDependencies": {
-        "@types/node": "^25.2.3",
+        "@datastructures-js/queue": "^4.3.0",
+        "@types/node": "^25.3.3",
+        "glob": "^13.0.6",
         "typescript": "~5.9.3",
+        "uuid": "^13.0.0",
         "vite": "^7.3.1",
-        "vite-plugin-dts": "^4.5.4"
+        "vite-plugin-dts": "^4.5.4",
+        "zod": "^4.3.6"
     },
     "author": {
         "name": "Adgytec",
@@ -41,10 +50,5 @@
         "type": "git",
         "url": "git+https://github.com/Adgytec/adgytec-web-utils.git"
     },
-    "homepage": "https://github.com/Adgytec/adgytec-web-utils/#/README.md",
-    "dependencies": {
-        "@datastructures-js/queue": "^4.3.0",
-        "uuid": "^13.0.0",
-        "zod": "^4.3.6"
-    }
+    "homepage": "https://github.com/Adgytec/adgytec-web-utils/#/README.md"
 }

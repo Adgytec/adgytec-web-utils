@@ -323,50 +323,54 @@ export class Upload {
 
     async #handleRetries() {
         const running = new Set<Promise<void>>();
-        while (!this.#retryQueue.isEmpty()) {
-            const task = this.#retryQueue.dequeue()!;
-            var p: Promise<void>;
 
-            // promise assignment
-            switch (task.type) {
-                case "singlepart-upload":
-                    p = this.#singlepartUpload(
-                        task.singlepartObj,
-                        task.retryCount
-                    );
-                    break;
-                case "singlepart-complete":
-                    p = this.#completeSinglepartUpload(
-                        task.singlepartObj,
-                        task.retryCount
-                    );
-                    break;
-                case "multipart-part-upload":
-                    p = this.#multipartUpload(
-                        task.multipartObj,
-                        task.partInfo,
-                        task.retryCount
-                    );
-                    break;
-                case "multipart-complete":
-                    p = this.#completeMultipartUpload(
-                        task.multipartObj,
-                        task.retryCount
-                    );
-                    break;
+        while (true) {
+            if (this.#retryQueue.isEmpty()) break;
+
+            while (!this.#retryQueue.isEmpty()) {
+                const task = this.#retryQueue.dequeue()!;
+                let p: Promise<void>;
+
+                // promise assignment
+                switch (task.type) {
+                    case "singlepart-upload":
+                        p = this.#singlepartUpload(
+                            task.singlepartObj,
+                            task.retryCount
+                        );
+                        break;
+                    case "singlepart-complete":
+                        p = this.#completeSinglepartUpload(
+                            task.singlepartObj,
+                            task.retryCount
+                        );
+                        break;
+                    case "multipart-part-upload":
+                        p = this.#multipartUpload(
+                            task.multipartObj,
+                            task.partInfo,
+                            task.retryCount
+                        );
+                        break;
+                    case "multipart-complete":
+                        p = this.#completeMultipartUpload(
+                            task.multipartObj,
+                            task.retryCount
+                        );
+                        break;
+                }
+
+                const taskPromise = p.finally(() =>
+                    running.delete(taskPromise)
+                );
+                running.add(taskPromise);
+
+                if (running.size >= this.#concurrentUploads) {
+                    await Promise.race(running);
+                }
             }
 
-            const taskPromise = p.finally(() => running.delete(taskPromise));
-            running.add(taskPromise);
-
-            if (running.size >= this.#concurrentUploads) {
-                await Promise.race(running);
-            }
+            await Promise.all(running);
         }
-
-        await Promise.all(running);
-
-        // check for further retries
-        if (!this.#retryQueue.isEmpty()) await this.#handleRetries();
     }
 }

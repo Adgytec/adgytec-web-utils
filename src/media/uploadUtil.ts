@@ -356,7 +356,9 @@ export class Upload {
                     break;
             }
 
-            running.add(p);
+            const taskPromise = p.finally(() => running.delete(taskPromise));
+            running.add(taskPromise);
+
             if (running.size >= this.#concurrentUploads) {
                 await Promise.race(running);
             }

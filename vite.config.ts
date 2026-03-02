@@ -28,7 +28,7 @@ export default defineConfig({
         cssCodeSplit: true,
         rollupOptions: {
             input: Object.fromEntries(
-                // 1️⃣ Auto-discovered entries (components + root index)
+                // 1️⃣ Auto-discovered entries (root index)
                 globSync(["src/*/index.ts", "src/index.ts"]).map((file) => [
                     // entry name: remove `src/` and extension
                     path.relative(

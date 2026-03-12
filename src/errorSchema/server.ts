@@ -15,7 +15,7 @@ export const malformedJSONFromServerSchema = z
         response: details,
     }));
 
-export const invalidResponseShape = z
+export const invalidResponseShapeSchema = z
     .object({
         code: z.literal(INVALID_RESPONSE_SHAPE),
         details: z.object({
@@ -28,7 +28,7 @@ export const invalidResponseShape = z
         details,
     }));
 
-export const unknownServerError = z
+export const unknownServerErrorSchema = z
     .object({
         code: z.literal(UNKNOWN_SERVER_ERROR),
         details: z.unknown(),

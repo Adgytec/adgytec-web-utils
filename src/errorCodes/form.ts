@@ -12,10 +12,16 @@ export const INVALID_LENGTH = "length";
 
 // invalid values
 export const INVALID = "invalid";
-export const INVALID_VALUE = "invalid-value";
 
 // unknown validation error
 export const UNKNOWN_VALIDATION_ERROR = "unknown";
+
+// invalid cause
+
+export const INVALID_VALUE = "invalid-value";
+
+// enum
+export const INVALID_ENUM_VALUE = "invalid-enum-value";
 
 // https origin
 export const REQUIRE_HTTPS = "require-https";

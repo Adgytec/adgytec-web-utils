@@ -78,7 +78,7 @@ export const nullValueErrorSchema = z.object({
     cause: z.literal(NULL_VALUE),
 });
 
-export const defaultSchemas = [
+export const defaultInvalidFieldSchemas = [
     invalidValueErrorSchema,
     invalidEnumValueErrorSchema,
     requireHttpsErrorSchema,

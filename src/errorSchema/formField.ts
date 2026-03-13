@@ -7,7 +7,8 @@ import {
     UNKNOWN_VALIDATION_ERROR,
     INVALID,
 } from "../errorCodes";
-import { defaultSchemas } from "./formFieldInvalid";
+import { defaultInvalidFieldSchemas } from "./formFieldInvalid";
+import type { InvalidSchemaType, NonEmptyArray } from "./types";
 
 export const fieldUnknownValidationErrorSchema = z.object({
     type: z.literal(UNKNOWN_VALIDATION_ERROR),
@@ -54,17 +55,15 @@ export const fieldLengthErrorSchema = z
         ...details,
     }));
 
-export type InvalidSchemaType = z.ZodObject<{ cause: z.ZodLiteral<string> }>;
-
 export function newFieldInvalidSchema(
     schemas?: InvalidSchemaType[]
 ): z.ZodTypeAny {
-    const invalidFieldSchemas: z.ZodObject<any>[] = [...defaultSchemas];
+    const invalidFieldSchemas: z.ZodTypeAny[] = [...defaultInvalidFieldSchemas];
     if (schemas) invalidFieldSchemas.push(...schemas);
 
     const detailsUnion = z.discriminatedUnion(
         "cause",
-        invalidFieldSchemas as [z.ZodObject<any>, ...z.ZodObject<any>[]]
+        invalidFieldSchemas as NonEmptyArray<z.ZodObject<any>>
     );
 
     return z
@@ -77,3 +76,11 @@ export function newFieldInvalidSchema(
             ...details,
         }));
 }
+
+export const defaultFieldSchemas = [
+    fieldUnknownValidationErrorSchema,
+    fieldMissingErrorSchema,
+    fieldOverflowErrorSchema,
+    fieldUnderflowErrorSchema,
+    fieldLengthErrorSchema,
+];

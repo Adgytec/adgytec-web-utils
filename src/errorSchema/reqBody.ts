@@ -52,4 +52,4 @@ export const defaultRequestBodySchemas: ErrorSchemaType[] = [
     unknownFieldInRequestBodySchema,
     requestBodyTooLargeSchema,
     emptyRequestBodySchema,
-];
+] as const;

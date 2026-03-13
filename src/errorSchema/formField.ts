@@ -69,4 +69,4 @@ export const defaultFieldSchemas: FieldErrorSchemaType[] = [
     fieldOverflowErrorSchema,
     fieldUnderflowErrorSchema,
     fieldLengthErrorSchema,
-];
+] as const;

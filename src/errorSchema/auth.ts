@@ -75,4 +75,4 @@ export const defaultAuthSchemas = [
     userNotExistInOrganizationSchema,
     userDisabledSchema,
     tokenNotFoundSchema,
-];
+] as const;

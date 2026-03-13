@@ -44,4 +44,4 @@ export const defaultIamSchemas: ErrorSchemaType[] = [
     invalidActorSchema,
     permissionExplicitlyDeniedSchema,
     missingPermissionSchema,
-];
+] as const;

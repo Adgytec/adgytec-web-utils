@@ -5,4 +5,4 @@ export const invalidIDSchema = z.object({
     code: z.literal(INVALID_ID),
 });
 
-export const defaultCommonSchemas = [invalidIDSchema];
+export const defaultCommonSchemas = [invalidIDSchema] as const;

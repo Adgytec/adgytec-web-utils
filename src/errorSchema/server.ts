@@ -37,4 +37,4 @@ export const defaultServerSchemas: ErrorSchemaType[] = [
     malformedJSONFromServerSchema,
     invalidResponseShapeSchema,
     unknownServerErrorSchema,
-];
+] as const;

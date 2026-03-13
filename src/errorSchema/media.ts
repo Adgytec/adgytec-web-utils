@@ -55,4 +55,4 @@ export const defaultMediaSchemas: ErrorSchemaType[] = [
     uploadAlreadyCompletedSchema,
     unsupportedObjectUploadedSchema,
     completeMultipartUploadCalledTooSoonSchema,
-];
+] as const;

@@ -38,3 +38,9 @@ export const unknownServerErrorSchema = z
         code,
         payload: details,
     }));
+
+export const defaultServerSchemas = [
+    malformedJSONFromServerSchema,
+    invalidResponseShapeSchema,
+    unknownServerErrorSchema,
+];

@@ -55,3 +55,13 @@ export const unsupportedObjectUploadedSchema = z.object({
 export const completeMultipartUploadCalledTooSoonSchema = z.object({
     code: z.literal(COMPLETE_MULTIPART_UPLOAD_CALLED_TOO_SOON),
 });
+
+export const defaultMediaSchemas = [
+    invalidMultipartNumberSchema,
+    mediaObjectNotFoundSchema,
+    mediaTooLargeSchema,
+    mediaItemsLimitExceededSchema,
+    uploadAlreadyCompletedSchema,
+    unsupportedObjectUploadedSchema,
+    completeMultipartUploadCalledTooSoonSchema,
+];

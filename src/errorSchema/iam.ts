@@ -57,3 +57,10 @@ export const missingPermissionSchema = z
         code,
         ...details,
     }));
+
+export const permissionSchemas = [
+    selfPermissionMismatchSchema,
+    invalidActorSchema,
+    permissionExplicitlyDeniedSchema,
+    missingPermissionSchema,
+];

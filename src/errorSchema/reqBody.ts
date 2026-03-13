@@ -53,3 +53,10 @@ export const emptyRequestBodySchema = z
         code,
         debugMessage: details.message,
     }));
+
+export const defaultRequestBodySchemas = [
+    invalidRequestBodySchema,
+    unknownFieldInRequestBodySchema,
+    requestBodyTooLargeSchema,
+    emptyRequestBodySchema,
+];

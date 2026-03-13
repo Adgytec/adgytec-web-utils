@@ -28,9 +28,7 @@ export const mediaTooLargeSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        mediaID: details.mediaID,
-        currentSize: details.currentSize,
-        maxSupportedSize: details.maxSupportedSize,
+        ...details,
     }));
 
 export const mediaItemsLimitExceededSchema = z
@@ -43,8 +41,7 @@ export const mediaItemsLimitExceededSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        currentLength: details.currentLength,
-        maxItemsSupported: details.maxItemsSupported,
+        ...details,
     }));
 
 export const uploadAlreadyCompletedSchema = z.object({

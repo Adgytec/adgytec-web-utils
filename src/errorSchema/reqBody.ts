@@ -39,7 +39,7 @@ export const requestBodyTooLargeSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        limit: details.limit,
+        ...details,
     }));
 
 export const emptyRequestBodySchema = z

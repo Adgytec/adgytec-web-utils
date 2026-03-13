@@ -25,7 +25,8 @@ export const invalidResponseShapeSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        details,
+        debugMessage: details.message,
+        payload: details.payload,
     }));
 
 export const unknownServerErrorSchema = z

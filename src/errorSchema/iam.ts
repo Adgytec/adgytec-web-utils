@@ -18,10 +18,7 @@ export const selfPermissionMismatchSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        permission: details.permission,
-        key: details.key,
-        required: details.required,
-        got: details.got,
+        ...details,
     }));
 
 export const invalidActorSchema = z
@@ -34,8 +31,7 @@ export const invalidActorSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        supportedActors: details.supportedActors,
-        currentActor: details.currentActor,
+        ...details,
     }));
 
 export const permissionExplicitlyDeniedSchema = z
@@ -47,7 +43,7 @@ export const permissionExplicitlyDeniedSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        deniedPermission: details.deniedPermission,
+        ...details,
     }));
 
 export const missingPermissionSchema = z
@@ -59,5 +55,5 @@ export const missingPermissionSchema = z
     })
     .transform(({ code, details }) => ({
         code,
-        missingPermission: details.missingPermission,
+        ...details,
     }));

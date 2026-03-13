@@ -26,7 +26,7 @@ export const fieldOverflowErrorSchema = z
     })
     .transform(({ type, details }) => ({
         type,
-        max: details.max,
+        ...details,
     }));
 
 export const fieldUnderflowErrorSchema = z
@@ -38,7 +38,7 @@ export const fieldUnderflowErrorSchema = z
     })
     .transform(({ type, details }) => ({
         type,
-        min: details.min,
+        ...details,
     }));
 
 export const fieldLengthErrorSchema = z
@@ -51,8 +51,7 @@ export const fieldLengthErrorSchema = z
     })
     .transform(({ type, details }) => ({
         type,
-        min: details.min,
-        max: details.max,
+        ...details,
     }));
 
 export function newFieldInvalidSchema(

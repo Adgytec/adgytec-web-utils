@@ -1,12 +1,17 @@
 import z from "zod";
 import { FORM_VALIDATION_FAILED } from "../errorCodes";
 import { defaultFieldSchemas, newFieldInvalidSchema } from "./formField";
-import type { InvalidSchemaType, NonEmptyArray } from "./types";
+import type {
+    ErrorSchemaType,
+    FieldErrorSchemaType,
+    InvalidSchemaType,
+    NonEmptyArray,
+} from "./types";
 
 export function newFormValidationFailedSchema(
     schemas?: InvalidSchemaType[]
-): z.ZodTypeAny {
-    const fieldSchemas: z.ZodTypeAny[] = [
+): ErrorSchemaType {
+    const fieldSchemas: FieldErrorSchemaType[] = [
         ...defaultFieldSchemas,
         newFieldInvalidSchema(schemas),
     ];

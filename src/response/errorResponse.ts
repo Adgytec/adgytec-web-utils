@@ -12,5 +12,7 @@ export function parseErrorResponse(payload: unknown): never {
         throw new ApplicationError(result.data.code, payload);
     }
 
-    throw new ApplicationError(UNKNOWN_SERVER_ERROR, payload);
+    throw new ApplicationError(UNKNOWN_SERVER_ERROR, {
+        payload,
+    });
 }

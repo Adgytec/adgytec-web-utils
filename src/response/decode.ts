@@ -20,7 +20,9 @@ export async function decodeAPIResponse<T>(
     try {
         payload = await res.json();
     } catch (e) {
-        throw new ApplicationError(MALFORMED_JSON_FROM_SERVER, res);
+        throw new ApplicationError(MALFORMED_JSON_FROM_SERVER, {
+            response: res,
+        });
     }
 
     if (res.ok) {

@@ -54,13 +54,18 @@ export const fieldLengthErrorSchema = z
         ...details,
     }));
 
+export type InvalidSchemaType = z.ZodObject<{ cause: z.ZodLiteral<string> }>;
+
 export function newFieldInvalidSchema(
-    schemas: z.ZodObject<{ cause: z.ZodLiteral<string> }>[]
+    schemas?: InvalidSchemaType[]
 ): z.ZodTypeAny {
-    const detailsUnion = z.discriminatedUnion("cause", [
-        ...defaultSchemas,
-        ...schemas,
-    ] as [z.ZodObject<any>, ...z.ZodObject<any>[]]);
+    const invalidFieldSchemas: z.ZodObject<any>[] = [...defaultSchemas];
+    if (schemas) invalidFieldSchemas.push(...schemas);
+
+    const detailsUnion = z.discriminatedUnion(
+        "cause",
+        invalidFieldSchemas as [z.ZodObject<any>, ...z.ZodObject<any>[]]
+    );
 
     return z
         .object({

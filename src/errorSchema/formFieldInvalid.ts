@@ -77,3 +77,21 @@ export const invalidUrlErrorSchema = z.object({
 export const nullValueErrorSchema = z.object({
     cause: z.literal(NULL_VALUE),
 });
+
+export const defaultSchemas = [
+    invalidValueErrorSchema,
+    invalidEnumValueErrorSchema,
+    requireHttpsErrorSchema,
+    missingHostErrorSchema,
+    containsPathErrorSchema,
+    containsQueryErrorSchema,
+    containsFragmentErrorSchema,
+    absoluteUrlErrorSchema,
+    nilIdErrorSchema,
+    invalidEmailErrorSchema,
+    missingMxRecordsErrorSchema,
+    notDigitErrorSchema,
+    notBase64UrlEncodedErrorSchema,
+    invalidUrlErrorSchema,
+    nullValueErrorSchema,
+];

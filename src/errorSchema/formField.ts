@@ -5,7 +5,9 @@ import {
     FIELD_UNDERFLOW,
     INVALID_LENGTH,
     UNKNOWN_VALIDATION_ERROR,
+    INVALID,
 } from "../errorCodes";
+import { defaultSchemas } from "./formFieldInvalid";
 
 export const fieldUnknownValidationErrorSchema = z.object({
     type: z.literal(UNKNOWN_VALIDATION_ERROR),
@@ -52,3 +54,22 @@ export const fieldLengthErrorSchema = z
         min: details.min,
         max: details.max,
     }));
+
+export function newFieldInvalidSchema(
+    schemas: z.ZodObject<{ cause: z.ZodLiteral<string> }>[]
+): z.ZodTypeAny {
+    const detailsUnion = z.discriminatedUnion("cause", [
+        ...defaultSchemas,
+        ...schemas,
+    ] as [z.ZodObject<any>, ...z.ZodObject<any>[]]);
+
+    return z
+        .object({
+            type: z.literal(INVALID),
+            details: detailsUnion,
+        })
+        .transform(({ type, details }) => ({
+            type,
+            ...details,
+        }));
+}

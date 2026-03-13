@@ -17,63 +17,63 @@ import {
     NULL_VALUE,
 } from "../errorCodes";
 
-export const InvalidValueErrorSchema = z.object({
+export const invalidValueErrorSchema = z.object({
     cause: z.literal(INVALID_VALUE),
 });
 
-export const InvalidEnumValueErrorSchema = z.object({
+export const invalidEnumValueErrorSchema = z.object({
     cause: z.literal(INVALID_ENUM_VALUE),
     possibleValues: z.array(z.string()),
 });
 
-export const RequireHttpsErrorSchema = z.object({
+export const requireHttpsErrorSchema = z.object({
     cause: z.literal(REQUIRE_HTTPS),
 });
 
-export const MissingHostErrorSchema = z.object({
+export const missingHostErrorSchema = z.object({
     cause: z.literal(MISSING_HOST),
 });
 
-export const ContainsPathErrorSchema = z.object({
+export const containsPathErrorSchema = z.object({
     cause: z.literal(CONTAINS_PATH),
 });
 
-export const ContainsQueryErrorSchema = z.object({
+export const containsQueryErrorSchema = z.object({
     cause: z.literal(CONTAINS_QUERY),
 });
 
-export const ContainsFragmentErrorSchema = z.object({
+export const containsFragmentErrorSchema = z.object({
     cause: z.literal(CONTAINS_FRAGMENT),
 });
 
-export const AbsoluteUrlErrorSchema = z.object({
+export const absoluteUrlErrorSchema = z.object({
     cause: z.literal(ABSOLUTE_URL),
 });
 
-export const NilIdErrorSchema = z.object({
+export const nilIdErrorSchema = z.object({
     cause: z.literal(NIL_ID),
 });
 
-export const InvalidEmailErrorSchema = z.object({
+export const invalidEmailErrorSchema = z.object({
     cause: z.literal(INVALID_EMAIL),
 });
 
-export const MissingMxRecordsErrorSchema = z.object({
+export const missingMxRecordsErrorSchema = z.object({
     cause: z.literal(MISSING_MX_RECORDS),
 });
 
-export const NotDigitErrorSchema = z.object({
+export const notDigitErrorSchema = z.object({
     cause: z.literal(NOT_DIGIT),
 });
 
-export const NotBase64UrlEncodedErrorSchema = z.object({
+export const notBase64UrlEncodedErrorSchema = z.object({
     cause: z.literal(NOT_BASE64_URL_ENCODED),
 });
 
-export const InvalidUrlErrorSchema = z.object({
+export const invalidUrlErrorSchema = z.object({
     cause: z.literal(INVALID_URL),
 });
 
-export const NullValueErrorSchema = z.object({
+export const nullValueErrorSchema = z.object({
     cause: z.literal(NULL_VALUE),
 });

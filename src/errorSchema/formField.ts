@@ -25,14 +25,14 @@ export const fieldMissingErrorSchema = z.object({
 export const fieldOverflowErrorSchema = z.object({
     type: z.literal(FIELD_OVERFLOW),
     details: z.object({
-        max: z.union([z.date(), z.number()]),
+        max: z.union([z.coerce.date(), z.number()]),
     }),
 });
 
 export const fieldUnderflowErrorSchema = z.object({
     type: z.literal(FIELD_UNDERFLOW),
     details: z.object({
-        min: z.union([z.date(), z.number()]),
+        min: z.union([z.coerce.date(), z.number()]),
     }),
 });
 

@@ -18,7 +18,7 @@ export function newFormValidationFailedSchema(
 
     const errorDetailsSchema = z.discriminatedUnion(
         "type",
-        fieldSchemas as NonEmptyArray<z.ZodObject<any>>
+        fieldSchemas as NonEmptyArray<FieldErrorSchemaType>
     );
 
     const fieldNodeSchema: z.ZodTypeAny = z.lazy(() =>
@@ -36,6 +36,6 @@ export function newFormValidationFailedSchema(
 
     return z.object({
         code: z.literal(FORM_VALIDATION_FAILED),
-        details: fieldNodeSchema,
+        details: z.array(fieldNodeSchema),
     });
 }

@@ -12,7 +12,7 @@ import type { ErrorSchemaType, NewErrorSchema, NonEmptyArray } from "./types";
 export function newErrorSchema({
     errorSchemas,
     invalidFieldSchemas,
-}: NewErrorSchema) {
+}: NewErrorSchema = {}) {
     const formErrorSchema = newFormValidationFailedSchema(invalidFieldSchemas);
     const schemas: ErrorSchemaType[] = [
         ...defaultAuthSchemas,

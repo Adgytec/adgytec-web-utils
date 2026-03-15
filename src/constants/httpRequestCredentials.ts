@@ -1,5 +1,5 @@
-export const httpRequestCredentials = {
+export const httpRequestCredentials: Record<string, RequestCredentials> = {
     include: "include",
     sameOrigin: "same-origin",
-    none: "none",
+    omit: "omit",
 };

@@ -1,5 +1,5 @@
 import { Queue } from "@datastructures-js/queue";
-import { BaseError, parseError } from "../errors";
+import { BaseError } from "../errors";
 import { decodeAPIResponse } from "../response";
 import { MultipartUtil } from "./multipartUtil";
 import type {
@@ -12,12 +12,9 @@ import type {
 } from "./types";
 import { SinglepartUtil } from "./singlepartUtil";
 import {
-    HTTP_POST,
-    HTTP_PUT,
-    HTTP_HEADER_CONTENT_TYPE,
-    HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
-    HTTP_REQUEST_CREDENTIALS_INCLUDE,
-    HTTP_HEADER_USER_LOCALE,
+    httpMethods,
+    httpReqHeaders,
+    httpRequestCredentials,
 } from "../constants";
 
 const defaultUploadLimit: UploadLimits = {
@@ -79,7 +76,7 @@ export class Upload {
 
     async #blobUpload(uploadURL: string, blob: Blob): Promise<Response> {
         return await fetch(uploadURL, {
-            method: HTTP_PUT,
+            method: httpMethods.put,
             body: blob,
         });
     }
@@ -193,21 +190,21 @@ export class Upload {
             });
 
             headers = {
-                [HTTP_HEADER_CONTENT_TYPE]:
-                    HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
+                [httpReqHeaders.contentType.key]:
+                    httpReqHeaders.contentType.valueApplicationJSON,
             };
         }
 
         if (this.#languageTag) {
             headers = headers || {};
-            headers[HTTP_HEADER_USER_LOCALE] = this.#languageTag;
+            headers[httpReqHeaders.userLocale.key] = this.#languageTag;
         }
 
         const apiRes = await fetch(completeURL, {
-            method: HTTP_POST,
+            method: httpMethods.post,
             body: reqBody,
             headers: headers,
-            credentials: HTTP_REQUEST_CREDENTIALS_INCLUDE,
+            credentials: httpRequestCredentials.include,
         });
         await decodeAPIResponse(apiRes);
     }

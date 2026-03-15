@@ -45,3 +45,5 @@ export const formFieldDiscriminatedUnionSchema = z.discriminatedUnion("type", [
     fieldLengthErrorSchema,
     fieldInvalidSchema,
 ]);
+
+export type FormFieldError = z.infer<typeof formFieldDiscriminatedUnionSchema>;

@@ -1,10 +1,11 @@
 import z from "zod";
 import { formCodes } from "../errorCodes";
-import { formFieldDiscriminatedUnionSchema } from "./formField";
+import {
+    type FormFieldError,
+    formFieldDiscriminatedUnionSchema,
+} from "./formField";
 
-type FormFieldError = z.infer<typeof formFieldDiscriminatedUnionSchema>;
-
-type FieldNode =
+export type FieldNode =
     | {
           key: string;
           errors: FormFieldError[];

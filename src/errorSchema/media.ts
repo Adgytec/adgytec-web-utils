@@ -11,19 +11,15 @@ export const mediaObjectNotFoundSchema = z.object({
 
 export const mediaTooLargeSchema = z.object({
     code: z.literal(mediaCodes.mediaTooLarge),
-    details: z.object({
-        mediaID: z.uuidv7(),
-        currentSize: z.int(),
-        maxSupportedSize: z.int(),
-    }),
+    mediaID: z.uuidv7(),
+    currentSize: z.int(),
+    maxSupportedSize: z.int(),
 });
 
 export const mediaItemsLimitExceededSchema = z.object({
     code: z.literal(mediaCodes.mediaItemsLimitExceeded),
-    details: z.object({
-        currentLength: z.int(),
-        maxItemsSupported: z.int(),
-    }),
+    currentLength: z.int(),
+    maxItemsSupported: z.int(),
 });
 
 export const uploadAlreadyCompletedSchema = z.object({
@@ -40,23 +36,17 @@ export const completeMultipartUploadCalledTooSoonSchema = z.object({
 
 export const singlepartUploadFailedSchema = z.object({
     code: z.literal(mediaCodes.singlepartUploadFailed),
-    details: z.object({
-        mediaID: z.uuidv7(),
-    }),
+    mediaID: z.uuidv7(),
 });
 
 export const multipartPartUploadFailedSchema = z.object({
     code: z.literal(mediaCodes.multipartPartUploadFailed),
-    details: z.object({
-        mediaID: z.uuidv7(),
-        partNumber: z.int(),
-    }),
+    mediaID: z.uuidv7(),
+    partNumber: z.int(),
 });
 
 export const missingETagValueSchema = z.object({
     code: z.literal(mediaCodes.missingETagValue),
-    details: z.object({
-        mediaID: z.uuidv7(),
-        partNumber: z.int(),
-    }),
+    mediaID: z.uuidv7(),
+    partNumber: z.int(),
 });

@@ -5,11 +5,14 @@ export class ApplicationError extends BaseError {
     #code: ErrorCode;
     #details: unknown;
 
-    constructor(code: ErrorCode, details: unknown) {
+    constructor(code: ErrorCode, details: object = {}) {
         super("application-error");
 
         this.#code = code;
-        this.#details = details;
+        this.#details = {
+            ...details,
+            code,
+        };
     }
 
     get details() {

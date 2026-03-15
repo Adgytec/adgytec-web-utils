@@ -1,6 +1,6 @@
 import z from "zod";
-import { INVALID_ID } from "../errorCodes";
+import { commonCodes } from "../errorCodes";
 
 export const invalidIDSchema = z.object({
-    code: z.literal(INVALID_ID),
+    code: z.literal(commonCodes.invalidId),
 });

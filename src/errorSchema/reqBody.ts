@@ -1,13 +1,8 @@
 import z from "zod";
-import {
-    EMPTY_REQUEST_BODY,
-    INVALID_REQUEST_BODY,
-    REQUEST_BODY_TOO_LARGE,
-    UNKNOWN_FIELD_IN_REQUEST_BODY,
-} from "../errorCodes";
+import { requestBodyCodes } from "../errorCodes";
 
 export const invalidRequestBodySchema = z.object({
-    code: z.literal(INVALID_REQUEST_BODY),
+    code: z.literal(requestBodyCodes.invalidRequestBody),
     details: z
         .object({
             message: z.string(),
@@ -18,7 +13,7 @@ export const invalidRequestBodySchema = z.object({
 });
 
 export const unknownFieldInRequestBodySchema = z.object({
-    code: z.literal(UNKNOWN_FIELD_IN_REQUEST_BODY),
+    code: z.literal(requestBodyCodes.unknownFieldInRequestBody),
     details: z
         .object({
             message: z.string(),
@@ -29,14 +24,14 @@ export const unknownFieldInRequestBodySchema = z.object({
 });
 
 export const requestBodyTooLargeSchema = z.object({
-    code: z.literal(REQUEST_BODY_TOO_LARGE),
+    code: z.literal(requestBodyCodes.requestBodyTooLarge),
     details: z.object({
         limit: z.int(),
     }),
 });
 
 export const emptyRequestBodySchema = z.object({
-    code: z.literal(EMPTY_REQUEST_BODY),
+    code: z.literal(requestBodyCodes.emptyRequestBody),
     details: z
         .object({
             message: z.string(),

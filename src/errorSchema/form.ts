@@ -1,5 +1,5 @@
 import z from "zod";
-import { FORM_VALIDATION_FAILED } from "../errorCodes";
+import { formCodes } from "../errorCodes";
 import { formFieldDiscriminatedUnionSchema } from "./formField";
 
 type FormFieldError = z.infer<typeof formFieldDiscriminatedUnionSchema>;
@@ -28,6 +28,6 @@ const fieldNodeSchema: z.ZodType<FieldNode> = z.lazy(() =>
 );
 
 export const formValidationFailedSchema = z.object({
-    code: z.literal(FORM_VALIDATION_FAILED),
+    code: z.literal(formCodes.formValidationFailed),
     details: z.array(fieldNodeSchema),
 });

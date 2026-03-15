@@ -1,19 +1,15 @@
 import z from "zod";
-import {
-    INVALID_RESPONSE_SHAPE,
-    MALFORMED_JSON_FROM_SERVER,
-    UNKNOWN_SERVER_ERROR,
-} from "../errorCodes";
+import { serverCodes } from "../errorCodes";
 
 export const malformedJSONFromServerSchema = z.object({
-    code: z.literal(MALFORMED_JSON_FROM_SERVER),
+    code: z.literal(serverCodes.malformedJsonFromServer),
     details: z.object({
         response: z.instanceof(Response),
     }),
 });
 
 export const invalidResponseShapeSchema = z.object({
-    code: z.literal(INVALID_RESPONSE_SHAPE),
+    code: z.literal(serverCodes.invalidResponseShape),
     details: z
         .object({
             message: z.string(),
@@ -26,7 +22,7 @@ export const invalidResponseShapeSchema = z.object({
 });
 
 export const unknownServerErrorSchema = z.object({
-    code: z.literal(UNKNOWN_SERVER_ERROR),
+    code: z.literal(serverCodes.unknownServerError),
     details: z.object({
         payload: z.unknown(),
     }),

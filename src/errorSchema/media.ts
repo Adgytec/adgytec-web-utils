@@ -1,24 +1,16 @@
 import z from "zod";
-import {
-    INVALID_MULTIPART_NUMBER,
-    MEDIA_OBJECT_NOT_FOUND,
-    MEDIA_TOO_LARGE,
-    MEDIA_ITEMS_LIMIT_EXCEEDED,
-    UPLOAD_ALREADY_COMPLETED,
-    UNSUPPORTED_OBJECT_UPLOADED,
-    COMPLETE_MULTIPART_UPLOAD_CALLED_TOO_SOON,
-} from "../errorCodes";
+import { mediaCodes } from "../errorCodes";
 
 export const invalidMultipartNumberSchema = z.object({
-    code: z.literal(INVALID_MULTIPART_NUMBER),
+    code: z.literal(mediaCodes.invalidMultipartNumber),
 });
 
 export const mediaObjectNotFoundSchema = z.object({
-    code: z.literal(MEDIA_OBJECT_NOT_FOUND),
+    code: z.literal(mediaCodes.mediaObjectNotFound),
 });
 
 export const mediaTooLargeSchema = z.object({
-    code: z.literal(MEDIA_TOO_LARGE),
+    code: z.literal(mediaCodes.mediaTooLarge),
     details: z.object({
         mediaID: z.uuidv7(),
         currentSize: z.int(),
@@ -27,7 +19,7 @@ export const mediaTooLargeSchema = z.object({
 });
 
 export const mediaItemsLimitExceededSchema = z.object({
-    code: z.literal(MEDIA_ITEMS_LIMIT_EXCEEDED),
+    code: z.literal(mediaCodes.mediaItemsLimitExceeded),
     details: z.object({
         currentLength: z.int(),
         maxItemsSupported: z.int(),
@@ -35,13 +27,13 @@ export const mediaItemsLimitExceededSchema = z.object({
 });
 
 export const uploadAlreadyCompletedSchema = z.object({
-    code: z.literal(UPLOAD_ALREADY_COMPLETED),
+    code: z.literal(mediaCodes.uploadAlreadyCompleted),
 });
 
 export const unsupportedObjectUploadedSchema = z.object({
-    code: z.literal(UNSUPPORTED_OBJECT_UPLOADED),
+    code: z.literal(mediaCodes.unsupportedObjectUploaded),
 });
 
 export const completeMultipartUploadCalledTooSoonSchema = z.object({
-    code: z.literal(COMPLETE_MULTIPART_UPLOAD_CALLED_TOO_SOON),
+    code: z.literal(mediaCodes.completeMultipartUploadCalledTooSoon),
 });

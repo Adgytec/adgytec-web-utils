@@ -1,63 +1,50 @@
 import z from "zod";
-import {
-    INVALID_API_KEY,
-    USER_NOT_FOUND,
-    JWT_NOT_ACCEPTABLE,
-    INVALID_SIGNED_URL,
-    HASH_MISMATCH,
-    INVALID_AUTH_HEADER_VALUE,
-    UNSUPPORTED_AUTH_SCHEME,
-    ORGANIZATION_STATUS_BAD,
-    USER_NOT_EXISTS_IN_ORGANIZATION_MANAGEMENT,
-    USER_NOT_EXIST_IN_ORGANIZATION,
-    USER_DISABLED,
-    TOKEN_NOT_FOUND,
-} from "../errorCodes";
+import { authCodes } from "../errorCodes";
 
 export const invalidApiKeySchema = z.object({
-    code: z.literal(INVALID_API_KEY),
+    code: z.literal(authCodes.invalidApiKey),
 });
 
 export const userNotFoundSchema = z.object({
-    code: z.literal(USER_NOT_FOUND),
+    code: z.literal(authCodes.userNotFound),
 });
 
 export const jwtNotAcceptableSchema = z.object({
-    code: z.literal(JWT_NOT_ACCEPTABLE),
+    code: z.literal(authCodes.jwtNotAcceptable),
 });
 
 export const invalidSignedUrlSchema = z.object({
-    code: z.literal(INVALID_SIGNED_URL),
+    code: z.literal(authCodes.invalidSignedUrl),
 });
 
 export const hashMismatchSchema = z.object({
-    code: z.literal(HASH_MISMATCH),
+    code: z.literal(authCodes.hashMismatch),
 });
 
 export const invalidAuthHeaderValueSchema = z.object({
-    code: z.literal(INVALID_AUTH_HEADER_VALUE),
+    code: z.literal(authCodes.invalidAuthHeaderValue),
 });
 
 export const unsupportedAuthSchemeSchema = z.object({
-    code: z.literal(UNSUPPORTED_AUTH_SCHEME),
+    code: z.literal(authCodes.unsupportedAuthScheme),
 });
 
 export const organizationStatusBadSchema = z.object({
-    code: z.literal(ORGANIZATION_STATUS_BAD),
+    code: z.literal(authCodes.organizationStatusBad),
 });
 
 export const userNotExistsInOrganizationManagementSchema = z.object({
-    code: z.literal(USER_NOT_EXISTS_IN_ORGANIZATION_MANAGEMENT),
+    code: z.literal(authCodes.userNotExistsInOrganizationManagement),
 });
 
 export const userNotExistInOrganizationSchema = z.object({
-    code: z.literal(USER_NOT_EXIST_IN_ORGANIZATION),
+    code: z.literal(authCodes.userNotExistInOrganization),
 });
 
 export const userDisabledSchema = z.object({
-    code: z.literal(USER_DISABLED),
+    code: z.literal(authCodes.userDisabled),
 });
 
 export const tokenNotFoundSchema = z.object({
-    code: z.literal(TOKEN_NOT_FOUND),
+    code: z.literal(authCodes.tokenNotFound),
 });

@@ -7,4 +7,8 @@ export const mediaCodes = {
     unsupportedObjectUploaded: "unsupported-object-uploaded",
     completeMultipartUploadCalledTooSoon:
         "complete-multipart-upload-called-too-soon",
+
+    singlepartUploadFailed: "singlepart-upload-failed",
+    multipartPartUploadFailed: "multipart-part-upload-failed",
+    missingETagValue: "missing-etag-value",
 } as const;

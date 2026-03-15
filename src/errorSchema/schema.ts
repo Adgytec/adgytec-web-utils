@@ -18,6 +18,9 @@ import {
     mediaItemsLimitExceededSchema,
     mediaObjectNotFoundSchema,
     mediaTooLargeSchema,
+    missingETagValueSchema,
+    multipartPartUploadFailedSchema,
+    singlepartUploadFailedSchema,
     unsupportedObjectUploadedSchema,
     uploadAlreadyCompletedSchema,
 } from "./media";
@@ -72,6 +75,9 @@ export const errorSchema = z.discriminatedUnion("code", [
     uploadAlreadyCompletedSchema,
     unsupportedObjectUploadedSchema,
     completeMultipartUploadCalledTooSoonSchema,
+    singlepartUploadFailedSchema,
+    multipartPartUploadFailedSchema,
+    missingETagValueSchema,
 
     invalidCursorValueSchema,
 

@@ -37,3 +37,26 @@ export const unsupportedObjectUploadedSchema = z.object({
 export const completeMultipartUploadCalledTooSoonSchema = z.object({
     code: z.literal(mediaCodes.completeMultipartUploadCalledTooSoon),
 });
+
+export const singlepartUploadFailedSchema = z.object({
+    code: z.literal(mediaCodes.singlepartUploadFailed),
+    details: z.object({
+        mediaID: z.uuidv7(),
+    }),
+});
+
+export const multipartPartUploadFailedSchema = z.object({
+    code: z.literal(mediaCodes.singlepartUploadFailed),
+    details: z.object({
+        mediaID: z.uuidv7(),
+        partNumber: z.int(),
+    }),
+});
+
+export const missingETagValueSchema = z.object({
+    code: z.literal(mediaCodes.missingETagValue),
+    details: z.object({
+        mediaID: z.uuidv7(),
+        partNumber: z.int(),
+    }),
+});

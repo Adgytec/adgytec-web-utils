@@ -7,12 +7,7 @@ import {
     UNKNOWN_VALIDATION_ERROR,
     INVALID,
 } from "../errorCodes";
-import { defaultInvalidFieldSchemas } from "./formFieldInvalid";
-import type {
-    FieldErrorSchemaType,
-    InvalidSchemaType,
-    NonEmptyArray,
-} from "./types";
+import { formFieldInvalidDiscriminatedUnion } from "./formFieldInvalid";
 
 export const fieldUnknownValidationErrorSchema = z.object({
     type: z.literal(UNKNOWN_VALIDATION_ERROR),
@@ -44,29 +39,16 @@ export const fieldLengthErrorSchema = z.object({
     }),
 });
 
-export function newFieldInvalidSchema(
-    schemas?: InvalidSchemaType[]
-): FieldErrorSchemaType {
-    const invalidFieldSchemas: InvalidSchemaType[] = [
-        ...defaultInvalidFieldSchemas,
-    ];
-    if (schemas) invalidFieldSchemas.push(...schemas);
+export const fieldInvalidSchema = z.object({
+    type: z.literal(INVALID),
+    details: formFieldInvalidDiscriminatedUnion,
+});
 
-    const detailsUnion = z.discriminatedUnion(
-        "cause",
-        invalidFieldSchemas as NonEmptyArray<InvalidSchemaType>
-    );
-
-    return z.object({
-        type: z.literal(INVALID),
-        details: detailsUnion,
-    });
-}
-
-export const defaultFieldSchemas: FieldErrorSchemaType[] = [
+export const formFieldDiscriminatedUnionSchema = z.discriminatedUnion("type", [
     fieldUnknownValidationErrorSchema,
     fieldMissingErrorSchema,
     fieldOverflowErrorSchema,
     fieldUnderflowErrorSchema,
     fieldLengthErrorSchema,
-] as const;
+    fieldInvalidSchema,
+]);

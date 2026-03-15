@@ -5,7 +5,6 @@ import {
     REQUEST_BODY_TOO_LARGE,
     UNKNOWN_FIELD_IN_REQUEST_BODY,
 } from "../errorCodes";
-import type { ErrorSchemaType } from "./types";
 
 export const invalidRequestBodySchema = z.object({
     code: z.literal(INVALID_REQUEST_BODY),
@@ -46,10 +45,3 @@ export const emptyRequestBodySchema = z.object({
             debugMessage: message,
         })),
 });
-
-export const defaultRequestBodySchemas: ErrorSchemaType[] = [
-    invalidRequestBodySchema,
-    unknownFieldInRequestBodySchema,
-    requestBodyTooLargeSchema,
-    emptyRequestBodySchema,
-] as const;

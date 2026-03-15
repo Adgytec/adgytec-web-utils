@@ -50,7 +50,7 @@ export const absoluteUrlErrorSchema = z.object({
     cause: z.literal(ABSOLUTE_URL),
 });
 
-export const nilIdErrorSchema = z.object({
+export const nilIDErrorSchema = z.object({
     cause: z.literal(NIL_ID),
 });
 
@@ -78,20 +78,23 @@ export const nullValueErrorSchema = z.object({
     cause: z.literal(NULL_VALUE),
 });
 
-export const defaultInvalidFieldSchemas = [
-    invalidValueErrorSchema,
-    invalidEnumValueErrorSchema,
-    requireHttpsErrorSchema,
-    missingHostErrorSchema,
-    containsPathErrorSchema,
-    containsQueryErrorSchema,
-    containsFragmentErrorSchema,
-    absoluteUrlErrorSchema,
-    nilIdErrorSchema,
-    invalidEmailErrorSchema,
-    missingMxRecordsErrorSchema,
-    notDigitErrorSchema,
-    notBase64UrlEncodedErrorSchema,
-    invalidUrlErrorSchema,
-    nullValueErrorSchema,
-];
+export const formFieldInvalidDiscriminatedUnion = z.discriminatedUnion(
+    "cause",
+    [
+        invalidValueErrorSchema,
+        invalidEnumValueErrorSchema,
+        requireHttpsErrorSchema,
+        missingHostErrorSchema,
+        containsPathErrorSchema,
+        containsQueryErrorSchema,
+        containsFragmentErrorSchema,
+        absoluteUrlErrorSchema,
+        nilIDErrorSchema,
+        invalidEmailErrorSchema,
+        missingMxRecordsErrorSchema,
+        notDigitErrorSchema,
+        notBase64UrlEncodedErrorSchema,
+        invalidUrlErrorSchema,
+        nullValueErrorSchema,
+    ]
+);

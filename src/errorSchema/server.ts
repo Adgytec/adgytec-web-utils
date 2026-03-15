@@ -4,7 +4,6 @@ import {
     MALFORMED_JSON_FROM_SERVER,
     UNKNOWN_SERVER_ERROR,
 } from "../errorCodes";
-import type { ErrorSchemaType } from "./types";
 
 export const malformedJSONFromServerSchema = z.object({
     code: z.literal(MALFORMED_JSON_FROM_SERVER),
@@ -32,9 +31,3 @@ export const unknownServerErrorSchema = z.object({
         payload: z.unknown(),
     }),
 });
-
-export const defaultServerSchemas: ErrorSchemaType[] = [
-    malformedJSONFromServerSchema,
-    invalidResponseShapeSchema,
-    unknownServerErrorSchema,
-] as const;

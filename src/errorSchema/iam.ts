@@ -5,7 +5,6 @@ import {
     PERMISSION_EXPLICITLY_DENIED,
     MISSING_PERMISSION,
 } from "../errorCodes";
-import type { ErrorSchemaType } from "./types";
 
 export const selfPermissionMismatchSchema = z.object({
     code: z.literal(SELF_PERMISSION_MISMATCH),
@@ -38,10 +37,3 @@ export const missingPermissionSchema = z.object({
         missingPermission: z.string(),
     }),
 });
-
-export const defaultIamSchemas: ErrorSchemaType[] = [
-    selfPermissionMismatchSchema,
-    invalidActorSchema,
-    permissionExplicitlyDeniedSchema,
-    missingPermissionSchema,
-] as const;

@@ -1,41 +1,33 @@
 import z from "zod";
 import { FORM_VALIDATION_FAILED } from "../errorCodes";
-import { defaultFieldSchemas, newFieldInvalidSchema } from "./formField";
-import type {
-    ErrorSchemaType,
-    FieldErrorSchemaType,
-    InvalidSchemaType,
-    NonEmptyArray,
-} from "./types";
+import { formFieldDiscriminatedUnionSchema } from "./formField";
 
-export function newFormValidationFailedSchema(
-    schemas?: InvalidSchemaType[]
-): ErrorSchemaType {
-    const fieldSchemas: FieldErrorSchemaType[] = [
-        ...defaultFieldSchemas,
-        newFieldInvalidSchema(schemas),
-    ];
+type FormFieldError = z.infer<typeof formFieldDiscriminatedUnionSchema>;
 
-    const errorDetailsSchema = z.discriminatedUnion(
-        "type",
-        fieldSchemas as NonEmptyArray<FieldErrorSchemaType>
-    );
+type FieldNode =
+    | {
+          key: string;
+          errors: FormFieldError[];
+      }
+    | {
+          key: string;
+          children: FieldNode[];
+      };
 
-    const fieldNodeSchema: z.ZodTypeAny = z.lazy(() =>
-        z.union([
-            z.object({
-                key: z.string(),
-                errors: z.array(errorDetailsSchema),
-            }),
-            z.object({
-                key: z.string(),
-                children: z.array(fieldNodeSchema),
-            }),
-        ])
-    );
+const fieldNodeSchema: z.ZodType<FieldNode> = z.lazy(() =>
+    z.union([
+        z.object({
+            key: z.string(),
+            errors: z.array(formFieldDiscriminatedUnionSchema),
+        }),
+        z.object({
+            key: z.string(),
+            children: z.array(fieldNodeSchema),
+        }),
+    ])
+);
 
-    return z.object({
-        code: z.literal(FORM_VALIDATION_FAILED),
-        details: z.array(fieldNodeSchema),
-    });
-}
+export const formValidationFailedSchema = z.object({
+    code: z.literal(FORM_VALIDATION_FAILED),
+    details: z.array(fieldNodeSchema),
+});

@@ -8,7 +8,6 @@ import {
     UNSUPPORTED_OBJECT_UPLOADED,
     COMPLETE_MULTIPART_UPLOAD_CALLED_TOO_SOON,
 } from "../errorCodes";
-import type { ErrorSchemaType } from "./types";
 
 export const invalidMultipartNumberSchema = z.object({
     code: z.literal(INVALID_MULTIPART_NUMBER),
@@ -46,13 +45,3 @@ export const unsupportedObjectUploadedSchema = z.object({
 export const completeMultipartUploadCalledTooSoonSchema = z.object({
     code: z.literal(COMPLETE_MULTIPART_UPLOAD_CALLED_TOO_SOON),
 });
-
-export const defaultMediaSchemas: ErrorSchemaType[] = [
-    invalidMultipartNumberSchema,
-    mediaObjectNotFoundSchema,
-    mediaTooLargeSchema,
-    mediaItemsLimitExceededSchema,
-    uploadAlreadyCompletedSchema,
-    unsupportedObjectUploadedSchema,
-    completeMultipartUploadCalledTooSoonSchema,
-] as const;

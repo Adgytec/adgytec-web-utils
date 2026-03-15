@@ -61,18 +61,3 @@ export const userDisabledSchema = z.object({
 export const tokenNotFoundSchema = z.object({
     code: z.literal(TOKEN_NOT_FOUND),
 });
-
-export const defaultAuthSchemas = [
-    invalidApiKeySchema,
-    userNotFoundSchema,
-    jwtNotAcceptableSchema,
-    invalidSignedUrlSchema,
-    hashMismatchSchema,
-    invalidAuthHeaderValueSchema,
-    unsupportedAuthSchemeSchema,
-    organizationStatusBadSchema,
-    userNotExistsInOrganizationManagementSchema,
-    userNotExistInOrganizationSchema,
-    userDisabledSchema,
-    tokenNotFoundSchema,
-] as const;

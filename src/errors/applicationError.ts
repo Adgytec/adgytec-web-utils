@@ -1,10 +1,11 @@
+import { errorSchema, type ErrorCode, type ErrorDetails } from "../errorSchema";
 import { BaseError } from "./baseError";
 
 export class ApplicationError extends BaseError {
-    #code: string;
+    #code: ErrorCode;
     #details: unknown;
 
-    constructor(code: string, details: unknown) {
+    constructor(code: ErrorCode, details: unknown) {
         super("application-error");
 
         this.#code = code;
@@ -17,5 +18,13 @@ export class ApplicationError extends BaseError {
 
     get code() {
         return this.#code;
+    }
+
+    parse(): ErrorDetails {
+        const { success, data, error } = errorSchema.safeParse(this.#details);
+        if (!success) {
+            throw error;
+        }
+        return data;
     }
 }

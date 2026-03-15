@@ -89,3 +89,7 @@ export const errorSchema = z.discriminatedUnion("code", [
     invalidResponseShapeSchema,
     unknownServerErrorSchema,
 ]);
+
+export type ErrorCode = z.infer<typeof errorSchema>["code"];
+
+export type ErrorDetails = z.infer<typeof errorSchema>;

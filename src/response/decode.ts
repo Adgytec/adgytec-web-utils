@@ -1,5 +1,8 @@
-import { APIError, newAPIErrorResponse } from "../errors";
 import { z } from "zod";
+import { ApplicationError } from "../errors";
+import { serverCodes } from "../errorCodes";
+import { parseSuccessReponse } from "./successReponse";
+import { parseErrorResponse } from "./errorResponse";
 
 // overloaded functions
 export function decodeAPIResponse<T>(
@@ -13,52 +16,36 @@ export async function decodeAPIResponse<T>(
     res: Response,
     schema?: z.ZodSchema<T>
 ): Promise<T | null> {
-    const text = await res.text();
+    // no need to handle response body
+    // caller expects no response
+    if (!schema && res.ok) {
+        return null;
+    }
 
-    // Empty body
-    if (!text) {
-        if (res.ok) {
-            if (schema) {
-                throw new APIError(res, {
-                    message:
-                        "Expected response body but received empty response",
-                });
-            }
-            return null;
-        }
-
-        throw new APIError(res, {
-            message: "Empty error response from server",
+    let raw: string;
+    try {
+        raw = await res.text();
+    } catch (e) {
+        throw new ApplicationError(serverCodes.malformedResponseBody, {
+            response: res,
         });
     }
 
     let payload: unknown;
-    try {
-        payload = JSON.parse(text);
-    } catch (e) {
-        const message = res.ok
-            ? "Malformed JSON response from server"
-            : "Malformed error response from server";
-        throw new APIError(res, { message });
-    }
-
-    // ✅ Success path
-    if (res.ok) {
-        if (!schema) {
-            // caller explicitly expects no response value
-            return null;
-        }
-
-        const parsed = schema.safeParse(payload);
-        if (!parsed.success) {
-            throw new APIError(res, {
-                message: `Invalid response shape from server: ${parsed.error.message}`,
+    if (raw.length > 0) {
+        try {
+            payload = JSON.parse(raw);
+        } catch {
+            throw new ApplicationError(serverCodes.malformedJsonFromServer, {
+                response: res,
             });
         }
-
-        return parsed.data;
     }
 
-    const errRes = newAPIErrorResponse(payload);
-    throw new APIError(res, errRes);
+    if (res.ok) {
+        // schema will always be present
+        return parseSuccessReponse(payload, schema!);
+    }
+
+    return parseErrorResponse(res.status, payload);
 }

@@ -1,5 +1,5 @@
 import { Queue } from "@datastructures-js/queue";
-import { BaseError, parseError } from "../errors";
+import { ApplicationError, BaseError } from "../errors";
 import { decodeAPIResponse } from "../response";
 import { MultipartUtil } from "./multipartUtil";
 import type {
@@ -12,13 +12,11 @@ import type {
 } from "./types";
 import { SinglepartUtil } from "./singlepartUtil";
 import {
-    HTTP_POST,
-    HTTP_PUT,
-    HTTP_HEADER_CONTENT_TYPE,
-    HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
-    HTTP_REQUEST_CREDENTIALS_INCLUDE,
-    HTTP_HEADER_USER_LOCALE,
+    httpMethods,
+    httpReqHeaders,
+    httpRequestCredentials,
 } from "../constants";
+import { mediaCodes } from "../errorCodes";
 
 const defaultUploadLimit: UploadLimits = {
     concurrentUploads: 4,
@@ -79,7 +77,7 @@ export class Upload {
 
     async #blobUpload(uploadURL: string, blob: Blob): Promise<Response> {
         return await fetch(uploadURL, {
-            method: HTTP_PUT,
+            method: httpMethods.put,
             body: blob,
         });
     }
@@ -98,16 +96,14 @@ export class Upload {
                 singlepartObj.blob
             );
             if (!res.ok) {
-                throw new BaseError(
-                    `Failed to upload file blob for media item ${singlepartObj.id}`
-                );
+                throw new ApplicationError(mediaCodes.singlepartUploadFailed, {
+                    mediaID: singlepartObj.id,
+                });
             }
 
             singlepartObj.allowComplete();
             await this.#completeSinglepartUpload(singlepartObj);
         } catch (err) {
-            const parsedErr = parseError(err);
-
             if (this.#canRetry(retryCount)) {
                 this.#lifecycleHandler.uploadRetrying(singlepartObj.id);
                 this.#addRetry({
@@ -116,7 +112,7 @@ export class Upload {
                     singlepartObj: singlepartObj,
                 });
             } else {
-                this.#lifecycleHandler.failed(singlepartObj.id, parsedErr);
+                this.#lifecycleHandler.failed(singlepartObj.id, err);
             }
         }
     }
@@ -136,14 +132,21 @@ export class Upload {
                 multipartObj.blob.slice(partInfo.startByte, partInfo.endByte)
             );
             if (!res.ok) {
-                throw new BaseError(
-                    `Failed to upload part ${partInfo.partNumber} for media item ${multipartObj.id}`
+                throw new ApplicationError(
+                    mediaCodes.multipartPartUploadFailed,
+                    {
+                        mediaID: multipartObj.id,
+                        partNumber: partInfo.partNumber,
+                    }
                 );
             }
 
             const etag = res.headers.get("ETag");
             if (!etag) {
-                throw new BaseError("missing etag");
+                throw new ApplicationError(mediaCodes.missingETagValue, {
+                    mediaID: multipartObj.id,
+                    partNumber: partInfo.partNumber,
+                });
             }
 
             multipartObj.add({
@@ -160,8 +163,6 @@ export class Upload {
             if (!multipartObj.canComplete) return;
             await this.#completeMultipartUpload(multipartObj);
         } catch (err) {
-            const parsedErr = parseError(err);
-
             if (this.#canRetry(retryCount)) {
                 this.#lifecycleHandler.multipartPartUploadRetrying(
                     multipartObj.id,
@@ -176,7 +177,7 @@ export class Upload {
                 });
             } else {
                 multipartObj.fail();
-                this.#lifecycleHandler.failed(multipartObj.id, parsedErr);
+                this.#lifecycleHandler.failed(multipartObj.id, err);
             }
         }
     }
@@ -193,21 +194,21 @@ export class Upload {
             });
 
             headers = {
-                [HTTP_HEADER_CONTENT_TYPE]:
-                    HTTP_HEADER_CONTENT_TYPE_APPLICATION_JSON,
+                [httpReqHeaders.contentType.key]:
+                    httpReqHeaders.contentType.valueApplicationJSON,
             };
         }
 
         if (this.#languageTag) {
             headers = headers || {};
-            headers[HTTP_HEADER_USER_LOCALE] = this.#languageTag;
+            headers[httpReqHeaders.userLocale.key] = this.#languageTag;
         }
 
         const apiRes = await fetch(completeURL, {
-            method: HTTP_POST,
+            method: httpMethods.post,
             body: reqBody,
             headers: headers,
-            credentials: HTTP_REQUEST_CREDENTIALS_INCLUDE,
+            credentials: httpRequestCredentials.include,
         });
         await decodeAPIResponse(apiRes);
     }
@@ -225,8 +226,6 @@ export class Upload {
 
             this.#lifecycleHandler.itemUploaded(singlepartObj.id);
         } catch (err) {
-            const parsedErr = parseError(err);
-
             if (this.#canRetry(retryCount)) {
                 this.#lifecycleHandler.uploadRetrying(singlepartObj.id);
                 this.#addRetry({
@@ -235,7 +234,7 @@ export class Upload {
                     singlepartObj: singlepartObj,
                 });
             } else {
-                this.#lifecycleHandler.failed(singlepartObj.id, parsedErr);
+                this.#lifecycleHandler.failed(singlepartObj.id, err);
             }
         }
     }
@@ -258,8 +257,6 @@ export class Upload {
         } catch (err) {
             multipartObj.resetComplete();
 
-            const parsedErr = parseError(err);
-
             if (this.#canRetry(retryCount)) {
                 this.#lifecycleHandler.uploadRetrying(multipartObj.id);
                 this.#addRetry({
@@ -269,7 +266,7 @@ export class Upload {
                 });
             } else {
                 multipartObj.fail();
-                this.#lifecycleHandler.failed(multipartObj.id, parsedErr);
+                this.#lifecycleHandler.failed(multipartObj.id, err);
             }
         }
     }

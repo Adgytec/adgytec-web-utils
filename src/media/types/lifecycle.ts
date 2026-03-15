@@ -1,10 +1,9 @@
-import type { APPError } from "../../errors";
 import type { UploadDetails } from "./uploadDetails";
 
 export type LifecycleHandler = {
     init: (details: UploadDetails[]) => void;
     completed: () => void;
-    failed: (id: string, reason: APPError) => void;
+    failed: (id: string, error: unknown) => void;
     itemUploaded: (id: string) => void;
     multipartPartUploaded: (
         id: string,

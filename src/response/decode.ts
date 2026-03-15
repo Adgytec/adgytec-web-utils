@@ -16,17 +16,35 @@ export async function decodeAPIResponse<T>(
     res: Response,
     schema?: z.ZodSchema<T>
 ): Promise<T | null> {
-    let payload: unknown;
+    // no need to handle response body
+    // caller expects no response
+    if (!schema && res.ok) {
+        return null;
+    }
+
+    let raw: string;
     try {
-        payload = await res.json();
+        raw = await res.text();
     } catch (e) {
-        throw new ApplicationError(serverCodes.malformedJsonFromServer, {
+        throw new ApplicationError(serverCodes.malformedResponseBody, {
             response: res,
         });
     }
 
+    let payload: unknown;
+    if (raw.length > 0) {
+        try {
+            payload = JSON.parse(raw);
+        } catch {
+            throw new ApplicationError(serverCodes.malformedJsonFromServer, {
+                response: res,
+            });
+        }
+    }
+
     if (res.ok) {
-        return parseSuccessReponse(payload, schema);
+        // schema will always be present
+        return parseSuccessReponse(payload, schema!);
     }
 
     return parseErrorResponse(res.status, payload);

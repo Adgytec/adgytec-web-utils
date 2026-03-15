@@ -1,4 +1,4 @@
-import { z } from "zod";
+import z from "zod";
 import { ApplicationError } from "../errors";
 import { serverCodes } from "../errorCodes";
 import { parseSuccessReponse } from "./successReponse";

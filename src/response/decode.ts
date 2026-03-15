@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ApplicationError } from "../errors";
-import { MALFORMED_JSON_FROM_SERVER } from "../errorCodes";
+import { serverCodes } from "../errorCodes";
 import { parseSuccessReponse } from "./successReponse";
 import { parseErrorResponse } from "./errorResponse";
 
@@ -20,7 +20,7 @@ export async function decodeAPIResponse<T>(
     try {
         payload = await res.json();
     } catch (e) {
-        throw new ApplicationError(MALFORMED_JSON_FROM_SERVER, {
+        throw new ApplicationError(serverCodes.malformedJsonFromServer, {
             response: res,
         });
     }

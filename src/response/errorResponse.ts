@@ -1,6 +1,6 @@
 import z from "zod";
 import { ApplicationError } from "../errors";
-import { UNKNOWN_SERVER_ERROR } from "../errorCodes";
+import { serverCodes } from "../errorCodes";
 
 const serverErrorSchema = z
     .object({
@@ -14,7 +14,7 @@ export function parseErrorResponse(payload: unknown): never {
         throw new ApplicationError(result.data.code, result.data);
     }
 
-    throw new ApplicationError(UNKNOWN_SERVER_ERROR, {
+    throw new ApplicationError(serverCodes.unknownServerError, {
         payload,
     });
 }

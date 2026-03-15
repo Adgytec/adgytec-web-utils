@@ -1,6 +1,6 @@
 import type { z } from "zod";
 import { ApplicationError } from "../errors";
-import { INVALID_RESPONSE_SHAPE } from "../errorCodes";
+import { serverCodes } from "../errorCodes";
 
 export function parseSuccessReponse<T>(
     payload: unknown,
@@ -11,7 +11,7 @@ export function parseSuccessReponse<T>(
     const parsed = schema.safeParse(payload);
     if (parsed.success) return parsed.data;
 
-    throw new ApplicationError(INVALID_RESPONSE_SHAPE, {
+    throw new ApplicationError(serverCodes.invalidResponseShape, {
         message: parsed.error.message,
         payload: payload,
     });

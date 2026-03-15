@@ -1,7 +1,6 @@
-export const INVALID_REQUEST_BODY = "invalid-request-body";
-
-export const UNKNOWN_FIELD_IN_REQUEST_BODY = "unknown-field-in-request-body";
-
-export const EMPTY_REQUEST_BODY = "empty-request-body";
-
-export const REQUEST_BODY_TOO_LARGE = "request-body-too-large";
+export const requestBodyCodes = {
+    invalidRequestBody: "invalid-request-body",
+    unknownFieldInRequestBody: "unknown-field-in-request-body",
+    emptyRequestBody: "empty-request-body",
+    requestBodyTooLarge: "request-body-too-large",
+} as const;

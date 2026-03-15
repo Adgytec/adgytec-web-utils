@@ -1,5 +1,5 @@
-export const MALFORMED_JSON_FROM_SERVER = "malformed-json-from-server";
-
-export const INVALID_RESPONSE_SHAPE = "invalid-response-shape";
-
-export const UNKNOWN_SERVER_ERROR = "unknown-server-error";
+export const serverCodes = {
+    malformedJsonFromServer: "malformed-json-from-server",
+    invalidResponseShape: "invalid-response-shape",
+    unknownServerError: "unknown-server-error",
+} as const;

@@ -1,1 +1,3 @@
-export const INVALID_CURSOR_VALUE = "invalid-cursor-value";
+export const paginationCodes = {
+    invalidCursorValue: "invalid-cursor-value",
+};

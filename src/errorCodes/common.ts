@@ -1,1 +1,3 @@
-export const INVALID_ID = "invalid-id";
+export const commonCodes = {
+    invalidId: "invalid-id",
+} as const;

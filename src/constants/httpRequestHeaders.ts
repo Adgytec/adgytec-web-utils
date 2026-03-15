@@ -11,4 +11,4 @@ export const httpReqHeaders = {
     userLocale: {
         key: "x-user-locale",
     },
-};
+} as const;

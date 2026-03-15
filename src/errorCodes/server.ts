@@ -1,5 +1,5 @@
 export const serverCodes = {
-    malformedResponseBody: "malformed-reponse-body",
+    malformedResponseBody: "malformed-response-body",
     malformedJsonFromServer: "malformed-json-from-server",
     invalidResponseShape: "invalid-response-shape",
     unknownServerError: "unknown-server-error",

@@ -241,7 +241,7 @@ function parseError(err: ApplicationError): ErrorDetails | null {
 
 function main() {
     try {
-        parseErrorResponse(json);
+        parseErrorResponse(422, json);
     } catch (err) {
         console.log("----------------------------------------");
         console.log(err);

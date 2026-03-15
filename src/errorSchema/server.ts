@@ -1,6 +1,11 @@
 import z from "zod";
 import { serverCodes } from "../errorCodes";
 
+export const malformedResponseBodySchema = z.object({
+    code: z.literal(serverCodes.malformedResponseBody),
+    response: z.instanceof(Response),
+});
+
 export const malformedJSONFromServerSchema = z.object({
     code: z.literal(serverCodes.malformedJsonFromServer),
     response: z.instanceof(Response),

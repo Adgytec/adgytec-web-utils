@@ -48,6 +48,7 @@ import {
     internalServerErrorSchema,
     invalidResponseShapeSchema,
     malformedJSONFromServerSchema,
+    malformedResponseBodySchema,
     unknownServerErrorSchema,
 } from "./server";
 
@@ -94,6 +95,7 @@ export const errorSchema = z.discriminatedUnion("code", [
     requestBodyTooLargeSchema,
     emptyRequestBodySchema,
 
+    malformedResponseBodySchema,
     malformedJSONFromServerSchema,
     invalidResponseShapeSchema,
     unknownServerErrorSchema,

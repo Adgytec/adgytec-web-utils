@@ -44,4 +44,4 @@ export const formFieldInvalidTypeCauses = {
     notBase64UrlEncoded: "not-base64-url-encoded",
     invalidUrl: "invalid-url",
     nullValue: "null-value",
-};
+} as const;

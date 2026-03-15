@@ -1,11 +1,11 @@
-import { errorSchema, type ErrorCode, type ErrorDetails } from "../errorSchema";
+import { errorSchema, type ErrorDetails } from "../errorSchema";
 import { BaseError } from "./baseError";
 
 export class ApplicationError extends BaseError {
-    #code: ErrorCode;
+    #code: string;
     #details: unknown;
 
-    constructor(code: ErrorCode, details: object = {}) {
+    constructor(code: string, details: object = {}) {
         super("application-error");
 
         this.#code = code;

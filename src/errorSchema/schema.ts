@@ -52,7 +52,6 @@ export const errorSchema = z.discriminatedUnion("code", [
     invalidSignedUrlSchema,
     hashMismatchSchema,
     invalidAuthHeaderValueSchema,
-    unsupportedObjectUploadedSchema,
     organizationStatusBadSchema,
     userNotExistsInOrganizationManagementSchema,
     userNotExistInOrganizationSchema,

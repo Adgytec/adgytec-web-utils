@@ -46,7 +46,7 @@ export const singlepartUploadFailedSchema = z.object({
 });
 
 export const multipartPartUploadFailedSchema = z.object({
-    code: z.literal(mediaCodes.singlepartUploadFailed),
+    code: z.literal(mediaCodes.multipartPartUploadFailed),
     details: z.object({
         mediaID: z.uuidv7(),
         partNumber: z.int(),

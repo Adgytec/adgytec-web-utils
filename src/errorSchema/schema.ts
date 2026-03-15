@@ -25,7 +25,11 @@ import {
     unsupportedObjectUploadedSchema,
     uploadAlreadyCompletedSchema,
 } from "./media";
-import { invalidIDSchema } from "./common";
+import {
+    invalidIDSchema,
+    methodNotAllowedSchema,
+    routeNotFoundSchema,
+} from "./common";
 import { formValidationFailedSchema } from "./form";
 import {
     invalidActorSchema,
@@ -61,6 +65,8 @@ export const errorSchema = z.discriminatedUnion("code", [
     unsupportedAuthSchemeSchema,
 
     invalidIDSchema,
+    routeNotFoundSchema,
+    methodNotAllowedSchema,
 
     formValidationFailedSchema,
 

@@ -21,10 +21,6 @@ export class ApplicationError extends BaseError {
     }
 
     parse(): ErrorDetails {
-        const { success, data, error } = errorSchema.safeParse(this.#details);
-        if (!success) {
-            throw error;
-        }
-        return data;
+        return errorSchema.parse(this.#details);
     }
 }

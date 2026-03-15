@@ -11,6 +11,7 @@ import {
     userNotExistInOrganizationSchema,
     userNotExistsInOrganizationManagementSchema,
     userNotFoundSchema,
+    unsupportedAuthSchemeSchema,
 } from "./auth";
 import {
     completeMultipartUploadCalledTooSoonSchema,
@@ -57,6 +58,7 @@ export const errorSchema = z.discriminatedUnion("code", [
     userNotExistInOrganizationSchema,
     userDisabledSchema,
     tokenNotFoundSchema,
+    unsupportedAuthSchemeSchema,
 
     invalidIDSchema,
 

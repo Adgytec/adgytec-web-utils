@@ -31,3 +31,5 @@ export const formValidationFailedSchema = z.object({
     code: z.literal(formCodes.formValidationFailed),
     details: z.array(fieldNodeSchema),
 });
+
+export type FormValidationFailed = z.infer<typeof formValidationFailedSchema>;

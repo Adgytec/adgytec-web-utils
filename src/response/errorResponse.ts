@@ -8,10 +8,14 @@ const serverErrorSchema = z
     })
     .loose();
 
-export function parseErrorResponse(payload: unknown): never {
+export function parseErrorResponse(status: number, payload: unknown): never {
     const result = serverErrorSchema.safeParse(payload);
     if (result.success) {
         throw new ApplicationError(result.data.code, result.data);
+    }
+
+    if (status >= 500) {
+        throw new ApplicationError(serverCodes.internalServerError);
     }
 
     throw new ApplicationError(serverCodes.unknownServerError, {

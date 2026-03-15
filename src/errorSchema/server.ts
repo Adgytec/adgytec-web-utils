@@ -22,3 +22,7 @@ export const unknownServerErrorSchema = z.object({
     code: z.literal(serverCodes.unknownServerError),
     payload: z.unknown(),
 });
+
+export const internalServerErrorSchema = z.object({
+    code: z.literal(serverCodes.internalServerError),
+});

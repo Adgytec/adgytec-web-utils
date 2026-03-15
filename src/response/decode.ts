@@ -29,5 +29,5 @@ export async function decodeAPIResponse<T>(
         return parseSuccessReponse(payload, schema);
     }
 
-    return parseErrorResponse(payload);
+    return parseErrorResponse(res.status, payload);
 }

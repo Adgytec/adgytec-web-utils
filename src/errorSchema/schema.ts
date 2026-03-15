@@ -45,6 +45,7 @@ import {
     unknownFieldInRequestBodySchema,
 } from "./reqBody";
 import {
+    internalServerErrorSchema,
     invalidResponseShapeSchema,
     malformedJSONFromServerSchema,
     unknownServerErrorSchema,
@@ -96,6 +97,7 @@ export const errorSchema = z.discriminatedUnion("code", [
     malformedJSONFromServerSchema,
     invalidResponseShapeSchema,
     unknownServerErrorSchema,
+    internalServerErrorSchema,
 ]);
 
 export type ErrorCode = z.infer<typeof errorSchema>["code"];

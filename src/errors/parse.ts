@@ -22,7 +22,7 @@ type ParseErrorResponse =
 export function parseError(err: unknown): ParseErrorResponse {
     if (isNetworkError(err)) {
         return {
-            code: "network-error",
+            code: commonCodes.networkError,
             debugMessage: err.toString(),
         };
     }
@@ -31,7 +31,7 @@ export function parseError(err: unknown): ParseErrorResponse {
         const errVal = err.parse();
         if (errVal instanceof z.ZodError) {
             return {
-                code: "zod-error",
+                code: commonCodes.zodError,
                 error: errVal,
             };
         }
@@ -39,7 +39,7 @@ export function parseError(err: unknown): ParseErrorResponse {
     }
 
     return {
-        code: "unexpected-error",
+        code: commonCodes.unexpectedError,
         debugMessage: err instanceof Error ? err.toString() : String(err),
     };
 }

@@ -1,3 +1,4 @@
+import z from "zod";
 import { errorSchema, type ErrorDetails } from "../errorSchema";
 import { BaseError } from "./baseError";
 
@@ -23,7 +24,11 @@ export class ApplicationError extends BaseError {
         return this.#code;
     }
 
-    parse(): ErrorDetails {
-        return errorSchema.parse(this.#details);
+    parse(): ErrorDetails | z.ZodError {
+        const { success, error, data } = errorSchema.safeParse(this.#details);
+        if (!success) {
+            return error;
+        }
+        return data;
     }
 }

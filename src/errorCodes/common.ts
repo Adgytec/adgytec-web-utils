@@ -4,4 +4,5 @@ export const commonCodes = {
     methodNotAllowed: "method-not-allowed",
     networkError: "network-error",
     unexpectedError: "unexpected-error",
+    zodError: "zod-error",
 } as const;

@@ -44,7 +44,12 @@ export default defineConfig({
                 entryFileNames: "[name].js",
                 assetFileNames: "assets/[name].[ext]",
             },
-            external: ["@datastructures-js/queue", "uuid", "zod"],
+            external: [
+                "@datastructures-js/queue",
+                "uuid",
+                "zod",
+                "is-network-error",
+            ],
         },
     },
 });

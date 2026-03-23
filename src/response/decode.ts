@@ -1,8 +1,8 @@
-import z from "zod";
-import { ApplicationError } from "../errors";
+import type z from "zod";
 import { serverCodes } from "../errorCodes";
-import { parseSuccessReponse } from "./successReponse";
+import { ApplicationError } from "../errors";
 import { parseErrorResponse } from "./errorResponse";
+import { parseSuccessReponse } from "./successReponse";
 
 // overloaded functions
 export function decodeAPIResponse<T>(
@@ -25,7 +25,7 @@ export async function decodeAPIResponse<T>(
     let raw: string;
     try {
         raw = await res.text();
-    } catch (e) {
+    } catch {
         throw new ApplicationError(serverCodes.malformedResponseBody, {
             response: res,
         });
@@ -43,8 +43,8 @@ export async function decodeAPIResponse<T>(
     }
 
     if (res.ok) {
-        // schema will always be present
-        return parseSuccessReponse(payload, schema!);
+        if (schema) return parseSuccessReponse(payload, schema);
+        return null;
     }
 
     return parseErrorResponse(res.status, payload);

@@ -1,5 +1,5 @@
-import z from "zod";
-import { errorSchema, type ErrorDetails } from "../errorSchema";
+import type z from "zod";
+import { type ErrorDetails, errorSchema } from "../errorSchema";
 import { BaseError } from "./baseError";
 
 export class ApplicationError extends BaseError {

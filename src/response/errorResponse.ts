@@ -1,6 +1,6 @@
 import z from "zod";
-import { ApplicationError } from "../errors";
 import { serverCodes } from "../errorCodes";
+import { ApplicationError } from "../errors";
 
 const serverErrorSchema = z
     .object({

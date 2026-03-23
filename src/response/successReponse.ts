@@ -1,6 +1,6 @@
-import z from "zod";
-import { ApplicationError } from "../errors";
+import type z from "zod";
 import { serverCodes } from "../errorCodes";
+import { ApplicationError } from "../errors";
 
 export function parseSuccessReponse<T>(
     payload: unknown,

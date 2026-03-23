@@ -1,4 +1,4 @@
-import type { UploadItems, UploadItem } from "./types";
+import type { UploadItem, UploadItems } from "./types";
 import { Upload } from "./uploadUtil";
 
 export const uploadItem: UploadItem = async (

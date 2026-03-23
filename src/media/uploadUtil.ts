@@ -343,6 +343,9 @@ export class Upload {
                     task.retryCount
                 );
             default: {
+                const _exhaustiveCheck: never = task;
+                void _exhaustiveCheck;
+
                 throw new BaseError(
                     `Unhandled retry task type: ${(task as { type: string }).type}`
                 );

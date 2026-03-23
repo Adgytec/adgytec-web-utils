@@ -1,8 +1,8 @@
-import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
-import { globSync } from "glob";
 import path, { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { globSync } from "glob";
+import { defineConfig } from "vite";
+import dts from "vite-plugin-dts";
 
 export default defineConfig({
     plugins: [

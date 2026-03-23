@@ -1,5 +1,5 @@
 import { v7 as uuidv7 } from "uuid";
-import type { NewMediaInfos, NewMediaInfo } from "./types";
+import type { NewMediaInfo, NewMediaInfos } from "./types";
 
 export const newMediaInfo: NewMediaInfo = (item) => {
     return {

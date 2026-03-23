@@ -1,6 +1,7 @@
 import path, { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { globSync } from "glob";
+import Sonda from "sonda/vite";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
 
@@ -11,6 +12,7 @@ export default defineConfig({
             insertTypesEntry: true,
             entryRoot: "src",
         }),
+        Sonda(),
     ],
     resolve: {
         alias: {
@@ -18,6 +20,7 @@ export default defineConfig({
         },
     },
     build: {
+        sourcemap: true,
         outDir: "dist",
         copyPublicDir: false,
         lib: {

@@ -25,7 +25,7 @@
         "format": "biome format --write .",
         "dev": "vite",
         "typecheck": "tsc -b",
-        "build": "npm run generate:index && npm run lint  && npm run typecheck && vite build",
+        "build": "npm run generate:index && npm run lint && npm run typecheck && vite build",
         "preview": "vite preview",
         "release": "npm run build && npm publish --public"
     },

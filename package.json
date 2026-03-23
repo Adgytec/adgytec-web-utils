@@ -40,6 +40,7 @@
         "@datastructures-js/queue": "^4.3.0",
         "@types/node": "^25.3.3",
         "glob": "^13.0.6",
+        "sonda": "^0.11.1",
         "tsx": "^4.21.0",
         "typescript": "~5.9.3",
         "uuid": "^13.0.0",

@@ -1,7 +1,14 @@
 import { Queue } from "@datastructures-js/queue";
+import {
+    httpMethods,
+    httpReqHeaders,
+    httpRequestCredentials,
+} from "../constants";
+import { mediaCodes } from "../errorCodes";
 import { ApplicationError, BaseError } from "../errors";
 import { decodeAPIResponse } from "../response";
 import { MultipartUtil } from "./multipartUtil";
+import { SinglepartUtil } from "./singlepartUtil";
 import type {
     LifecycleHandler,
     MultipartPartInfo,
@@ -10,13 +17,6 @@ import type {
     UploadDetails,
     UploadLimits,
 } from "./types";
-import { SinglepartUtil } from "./singlepartUtil";
-import {
-    httpMethods,
-    httpReqHeaders,
-    httpRequestCredentials,
-} from "../constants";
-import { mediaCodes } from "../errorCodes";
 
 const defaultUploadLimit: UploadLimits = {
     concurrentUploads: 4,
@@ -186,8 +186,8 @@ export class Upload {
         completeURL: string,
         body?: MultipartUploadedPartDetails[]
     ) {
-        let reqBody: BodyInit | undefined = undefined;
-        let headers: HeadersInit | undefined = undefined;
+        let reqBody: BodyInit | undefined;
+        let headers: Record<string, string> | undefined;
         if (body) {
             reqBody = JSON.stringify({
                 partsInfo: body,
@@ -342,13 +342,14 @@ export class Upload {
                     task.multipartObj,
                     task.retryCount
                 );
-            default:
+            default: {
                 const _exhaustiveCheck: never = task;
+                void _exhaustiveCheck;
 
-                // This will cause a compile-time error if a new task type is added but not handled here.
                 throw new BaseError(
-                    `Unhandled retry task type: ${(_exhaustiveCheck as any).type}`
+                    `Unhandled retry task type: ${(task as { type: string }).type}`
                 );
+            }
         }
     }
 
@@ -359,9 +360,10 @@ export class Upload {
             if (this.#retryQueue.isEmpty()) break;
 
             while (!this.#retryQueue.isEmpty()) {
-                const task = this.#retryQueue.dequeue()!;
+                const task = this.#retryQueue.dequeue();
+                if (!task) break;
 
-                let p: Promise<void> = this.#retryTask(task).finally(() =>
+                const p: Promise<void> = this.#retryTask(task).finally(() =>
                     running.delete(p)
                 );
                 running.add(p);

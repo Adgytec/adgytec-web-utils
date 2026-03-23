@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
 
 const SRC_DIR = path.resolve("src");
 const OUTPUT = path.resolve("src/index.ts"); // root barrel
@@ -19,8 +19,7 @@ function generate() {
         }
     }
 
-    const content =
-        `// AUTO-GENERATED FILE — DO NOT EDIT\n\n` + exports.join("\n") + "\n";
+    const content = `// AUTO-GENERATED FILE — DO NOT EDIT\n\n${exports.join("\n")}\n`;
 
     fs.writeFileSync(OUTPUT, content);
     console.log(`Generated ${OUTPUT}`);

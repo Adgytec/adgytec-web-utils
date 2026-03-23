@@ -1,8 +1,8 @@
 import isNetworkError from "is-network-error";
-import { commonCodes } from "../errorCodes";
-import { type ErrorDetails } from "../errorSchema";
-import { ApplicationError } from "./applicationError";
 import z from "zod";
+import { commonCodes } from "../errorCodes";
+import type { ErrorDetails } from "../errorSchema";
+import { ApplicationError } from "./applicationError";
 
 type ParseErrorResponse =
     | {

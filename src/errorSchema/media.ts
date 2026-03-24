@@ -11,7 +11,7 @@ export const mediaObjectNotFoundSchema = z.object({
 
 export const mediaTooLargeSchema = z.object({
     code: z.literal(mediaCodes.mediaTooLarge),
-    mediaID: z.uuidv7(),
+    mediaID: z.string(),
     currentSize: z.int(),
     maxSupportedSize: z.int(),
 });

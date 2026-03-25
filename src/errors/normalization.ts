@@ -11,8 +11,21 @@ export type ErrorNormalization = {
     items: string[];
 };
 
+// Normalizes an error object to ensure a consistent `code` for downstream usage (e.g. translations/UI).
+//
+// - Accepts both strongly-typed and flexible error objects (must contain `code`)
+// - Applies custom and default overrides to map multiple error codes to a single normalized code
+// - May intentionally strip additional fields when an override is applied
+// - Otherwise returns the original error object as-is
+//
+// Note: This function is intended for presentation layers, not for logic that depends on strict typing.
 export const normalizeError = (
-    parsedResponse: ParseErrorResponse,
+    parsedResponse:
+        | ParseErrorResponse
+        | {
+              code: string;
+              [key: string]: unknown;
+          },
     customOverrides?: ErrorNormalization[]
 ) => {
     if (customOverrides) {

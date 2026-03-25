@@ -17,7 +17,8 @@ const buildOverrideMap = (
     const map = new Map<string, string>();
     for (const { code, items } of overrides) {
         for (const item of items) {
-            map.set(item, code);
+            // first match should win
+            if (!map.has(item)) map.set(item, code);
         }
     }
     return map;
@@ -42,6 +43,7 @@ export const normalizeError = (
           },
     customOverrides?: readonly ErrorNormalization[]
 ) => {
+    // no need to create map, this will be small set of overrides for custom actions only
     if (customOverrides) {
         for (const { items, code } of customOverrides) {
             if (items.includes(parsedResponse.code)) {

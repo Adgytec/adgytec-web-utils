@@ -1,3 +1,4 @@
+import { defaultOverrides } from "../errorCodes";
 import type { ParseErrorResponse } from "./parse";
 
 // ErrorNormalization maps multiple internal/actual error codes
@@ -19,6 +20,12 @@ export const normalizeError = (
             if (items.includes(parsedResponse.code)) {
                 return { code };
             }
+        }
+    }
+
+    for (const { items, code } of defaultOverrides) {
+        if (items.includes(parsedResponse.code)) {
+            return { code };
         }
     }
 

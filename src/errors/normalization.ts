@@ -11,6 +11,20 @@ export type ErrorNormalization = {
     items: readonly string[];
 };
 
+const buildOverrideMap = (
+    overrides: readonly ErrorNormalization[]
+): ReadonlyMap<string, string> => {
+    const map = new Map<string, string>();
+    for (const { code, items } of overrides) {
+        for (const item of items) {
+            map.set(item, code);
+        }
+    }
+    return map;
+};
+
+const defaultOverridesMap = buildOverrideMap(defaultOverrides);
+
 // Normalizes an error object to ensure a consistent `code` for downstream usage (e.g. translations/UI).
 //
 // - Accepts both strongly-typed and flexible error objects (must contain `code`)
@@ -36,10 +50,9 @@ export const normalizeError = (
         }
     }
 
-    for (const { items, code } of defaultOverrides) {
-        if (items.includes(parsedResponse.code)) {
-            return { code };
-        }
+    const normalizedCode = defaultOverridesMap.get(parsedResponse.code);
+    if (normalizedCode) {
+        return { code: normalizedCode };
     }
 
     return parsedResponse;

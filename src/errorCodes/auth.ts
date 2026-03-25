@@ -21,7 +21,6 @@ export const authOverrides: ErrorNormalization = {
     items: [
         authCodes.invalidApiKey,
         authCodes.jwtNotAcceptable,
-        authCodes.hashMismatch,
         authCodes.invalidAuthHeaderValue,
         authCodes.unsupportedAuthScheme,
         authCodes.tokenNotFound,

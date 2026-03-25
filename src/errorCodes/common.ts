@@ -17,4 +17,4 @@ export const commonOverrides: ErrorNormalization = {
         commonCodes.methodNotAllowed,
         commonCodes.zodError,
     ],
-};
+} as const;

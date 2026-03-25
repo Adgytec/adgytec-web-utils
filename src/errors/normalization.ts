@@ -8,7 +8,7 @@ import type { ParseErrorResponse } from "./parse";
 // items → list of original/internal error codes that should be mapped to `code`
 export type ErrorNormalization = {
     code: string;
-    items: string[];
+    items: readonly string[];
 };
 
 // Normalizes an error object to ensure a consistent `code` for downstream usage (e.g. translations/UI).
@@ -26,7 +26,7 @@ export const normalizeError = (
               code: string;
               [key: string]: unknown;
           },
-    customOverrides?: ErrorNormalization[]
+    customOverrides?: readonly ErrorNormalization[]
 ) => {
     if (customOverrides) {
         for (const { items, code } of customOverrides) {

@@ -7,10 +7,9 @@ import { paginationOverrides } from "./pagination";
 import { reqBodyOverrides } from "./reqBody";
 import { serverOverrides } from "./server";
 
-export const defaultOverrides: ErrorNormalization[] = [
+export const defaultOverrides: readonly ErrorNormalization[] = [
     authOverrides,
     signedURLOverrides,
-    commonOverrides,
     commonOverrides,
     iamOverrides,
     mediaOverrides,

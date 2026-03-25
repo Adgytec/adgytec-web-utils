@@ -4,7 +4,7 @@ import { commonCodes } from "../errorCodes";
 import type { ErrorDetails } from "../errorSchema";
 import { ApplicationError } from "./applicationError";
 
-type ParseErrorResponse =
+export type ParseErrorResponse =
     | {
           code: typeof commonCodes.networkError;
           debugMessage: string;

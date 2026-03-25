@@ -3,6 +3,7 @@ export * from "./common";
 export * from "./form";
 export * from "./iam";
 export * from "./media";
+export * from "./overrides";
 export * from "./pagination";
 export * from "./reqBody";
 export * from "./server";

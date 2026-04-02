@@ -44,6 +44,7 @@ import {
     requestBodyTooLargeSchema,
     unknownFieldInRequestBodySchema,
 } from "./reqBody";
+import { limitExceededSchema } from "./restrictions";
 import {
     internalServerErrorSchema,
     invalidResponseShapeSchema,
@@ -76,6 +77,8 @@ export const errorSchema = z.discriminatedUnion("code", [
     invalidActorSchema,
     permissionExplicitlyDeniedSchema,
     missingPermissionSchema,
+
+    limitExceededSchema,
 
     invalidMultipartNumberSchema,
     mediaObjectNotFoundSchema,

@@ -6,4 +6,5 @@ export * from "./media";
 export * from "./overrides";
 export * from "./pagination";
 export * from "./reqBody";
+export * from "./restrictions";
 export * from "./server";

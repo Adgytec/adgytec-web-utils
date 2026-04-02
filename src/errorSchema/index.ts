@@ -9,5 +9,6 @@ export * from "./iam";
 export * from "./media";
 export * from "./pagination";
 export * from "./reqBody";
+export * from "./restrictions";
 export * from "./schema";
 export * from "./server";

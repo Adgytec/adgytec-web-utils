@@ -1,10 +1,10 @@
 import { type DefaultOverrideCode, defaultOverrides } from "../errorCodes";
 import type {
     ErrorCode,
+    ErrorDetails,
     ErrorDetailsNormalized,
     NormalizedErrorCode,
 } from "../errorSchema";
-import type { ParseErrorResponse } from "./parse";
 
 export type ErrorNormalization = {
     code: ErrorCode;
@@ -37,7 +37,7 @@ const isNormalizedCode = (code: ErrorCode): code is DefaultOverrideCode => {
 
 // Normalizes an error object to ensure a consistent `code` for downstream usage.
 export const normalizeError = (
-    parsedResponse: ParseErrorResponse
+    parsedResponse: ErrorDetails
 ): ErrorDetailsNormalized => {
     if (isNormalizedCode(parsedResponse.code)) {
         const normalizedCode = defaultOverridesMap.get(parsedResponse.code);

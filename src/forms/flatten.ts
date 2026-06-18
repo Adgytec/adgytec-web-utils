@@ -1,5 +1,4 @@
-import type { FieldNode } from "./form";
-import type { FormFieldError } from "./formField";
+import type { FieldNode, FormFieldError } from "../errorSchema";
 
 export type FlattenedErrors = Record<string, FormFieldError[]>;
 

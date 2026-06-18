@@ -2,7 +2,10 @@
 
 Exports from `src/forms`.
 
-The form helper facilitates client-side browser form validation: you pass an `HTMLFormElement` and a Zod validation schema, and the helper extracts, parses, and validates the inputs, returning either the typed data object or a flattened, dotted-key map of field errors.
+The form helper facilitates client-side browser form validation: you pass an `HTMLFormElement` and a Zod validation schema, and the helper extracts, parses, and validates the inputs, returning either the typed data object or a flat map of field errors.
+
+> [!NOTE]
+> **Flat Schema Assumption**: `validateAndGetFormValues` is optimized for flat forms (single-level objects). It assumes the `FormData` inputs and the Zod schema are flat. If you need to validate deep nested structures, use the recursive `flattenFieldNodes` utility directly on a custom `FieldNode[]` error tree.
 
 ---
 

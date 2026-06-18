@@ -5,7 +5,7 @@ export const paginationCodes = {
     invalidCursorValue: "invalid-cursor-value",
 } as const;
 
-export const paginationOverrides: ErrorNormalization = {
+export const paginationOverrides = {
     code: commonCodes.unexpectedError,
     items: [paginationCodes.invalidCursorValue],
-} as const;
+} as const satisfies ErrorNormalization;

@@ -8,7 +8,7 @@ export const requestBodyCodes = {
     requestBodyTooLarge: "request-body-too-large",
 } as const;
 
-export const reqBodyOverrides: ErrorNormalization = {
+export const reqBodyOverrides = {
     code: commonCodes.unexpectedError,
     items: [
         requestBodyCodes.invalidRequestBody,
@@ -16,4 +16,4 @@ export const reqBodyOverrides: ErrorNormalization = {
         requestBodyCodes.emptyRequestBody,
         requestBodyCodes.requestBodyTooLarge,
     ],
-} as const;
+} as const satisfies ErrorNormalization;

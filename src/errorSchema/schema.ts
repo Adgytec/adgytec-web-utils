@@ -1,5 +1,7 @@
 import z from "zod";
+import type { DefaultOverrideCode } from "../errorCodes";
 import {
+    authErrorSchema,
     hashMismatchSchema,
     invalidApiKeySchema,
     invalidAuthHeaderValueSchema,
@@ -16,10 +18,14 @@ import {
 import {
     invalidIDSchema,
     methodNotAllowedSchema,
+    networkErrorSchema,
     routeNotFoundSchema,
+    unexpectedErrorSchema,
+    zodErrorSchema,
 } from "./common";
 import { formValidationFailedSchema } from "./form";
 import {
+    authorizationErrorSchema,
     invalidActorSchema,
     missingPermissionSchema,
     permissionExplicitlyDeniedSchema,
@@ -31,6 +37,7 @@ import {
     mediaItemsLimitExceededSchema,
     mediaObjectNotFoundSchema,
     mediaTooLargeSchema,
+    mediaUploadErrorSchema,
     missingETagValueSchema,
     multipartPartUploadFailedSchema,
     singlepartUploadFailedSchema,
@@ -54,6 +61,7 @@ import {
 } from "./server";
 
 export const errorSchema = z.discriminatedUnion("code", [
+    authErrorSchema,
     invalidApiKeySchema,
     userNotFoundSchema,
     jwtNotAcceptableSchema,
@@ -70,9 +78,13 @@ export const errorSchema = z.discriminatedUnion("code", [
     invalidIDSchema,
     routeNotFoundSchema,
     methodNotAllowedSchema,
+    networkErrorSchema,
+    unexpectedErrorSchema,
+    zodErrorSchema,
 
     formValidationFailedSchema,
 
+    authorizationErrorSchema,
     selfPermissionMismatchSchema,
     invalidActorSchema,
     permissionExplicitlyDeniedSchema,
@@ -80,6 +92,7 @@ export const errorSchema = z.discriminatedUnion("code", [
 
     limitExceededSchema,
 
+    mediaUploadErrorSchema,
     invalidMultipartNumberSchema,
     mediaObjectNotFoundSchema,
     mediaTooLargeSchema,
@@ -106,5 +119,12 @@ export const errorSchema = z.discriminatedUnion("code", [
 ]);
 
 export type ErrorCode = z.infer<typeof errorSchema>["code"];
-
 export type ErrorDetails = z.infer<typeof errorSchema>;
+
+export type ErrorDetailsNormalized = Exclude<
+    ErrorDetails,
+    {
+        code: DefaultOverrideCode;
+    }
+>;
+export type NormalizedErrorCode = ErrorDetailsNormalized["code"];

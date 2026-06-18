@@ -1,6 +1,10 @@
 import z from "zod";
 import { iamCodes } from "../errorCodes";
 
+export const authorizationErrorSchema = z.object({
+    code: z.literal(iamCodes.authorizationError),
+});
+
 export const selfPermissionMismatchSchema = z.object({
     code: z.literal(iamCodes.selfPermissionMismatch),
     permission: z.string(),

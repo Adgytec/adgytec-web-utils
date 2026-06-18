@@ -1,4 +1,5 @@
 import type z from "zod";
+import { httpReqHeaders } from "../constants";
 import { serverCodes } from "../errorCodes";
 import { ApplicationError } from "../errors";
 import { parseErrorResponse } from "./errorResponse";
@@ -33,6 +34,17 @@ export async function decodeAPIResponse<T>(
 
     let payload: unknown;
     if (raw.length > 0) {
+        const contentType = res.headers.get("content-type")?.toLowerCase();
+        if (
+            !contentType?.includes(
+                httpReqHeaders.contentType.valueApplicationJSON
+            )
+        ) {
+            throw new ApplicationError(serverCodes.invalidResponseShape, {
+                response: res,
+            });
+        }
+
         try {
             payload = JSON.parse(raw);
         } catch {

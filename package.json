@@ -1,7 +1,7 @@
 {
     "name": "@adgytec/adgytec-web-utils",
     "private": false,
-    "version": "0.0.8",
+    "version": "0.1.0",
     "type": "module",
     "sideEffects": false,
     "files": [
@@ -28,7 +28,7 @@
         "build": "npm run generate:index && npm run lint && npm run typecheck && vite build",
         "preview": "vite preview",
         "release": "npm run build && npm publish --public",
-        "test": "echo \"No tests\""
+        "test": "node --import tsx --test tests/**/*.test.ts"
     },
     "peerDependencies": {
         "@datastructures-js/queue": ">=4.3.0",

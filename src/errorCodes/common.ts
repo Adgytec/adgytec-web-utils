@@ -9,7 +9,7 @@ export const commonCodes = {
     zodError: "zod-error",
 } as const;
 
-export const commonOverrides: ErrorNormalization = {
+export const commonOverrides = {
     code: commonCodes.unexpectedError,
     items: [
         commonCodes.invalidId,
@@ -17,4 +17,4 @@ export const commonOverrides: ErrorNormalization = {
         commonCodes.methodNotAllowed,
         commonCodes.zodError,
     ],
-} as const;
+} as const satisfies ErrorNormalization;

@@ -1,6 +1,7 @@
 import type { ErrorNormalization } from "../errors";
 
 export const authCodes = {
+    authError: "auth-error",
     invalidApiKey: "invalid-api-key",
     userNotFound: "user-not-found",
     jwtNotAcceptable: "jwt-not-acceptable",
@@ -16,8 +17,8 @@ export const authCodes = {
     tokenNotFound: "token-not-found",
 } as const;
 
-export const authOverrides: ErrorNormalization = {
-    code: "auth-error",
+export const authOverrides = {
+    code: authCodes.authError,
     items: [
         authCodes.invalidApiKey,
         authCodes.jwtNotAcceptable,
@@ -25,9 +26,9 @@ export const authOverrides: ErrorNormalization = {
         authCodes.unsupportedAuthScheme,
         authCodes.tokenNotFound,
     ],
-} as const;
+} as const satisfies ErrorNormalization;
 
-export const signedURLOverrides: ErrorNormalization = {
+export const signedURLOverrides = {
     code: authCodes.invalidSignedUrl,
     items: [authCodes.hashMismatch],
-} as const;
+} as const satisfies ErrorNormalization;

@@ -1,6 +1,7 @@
 import type { ErrorNormalization } from "../errors";
 
 export const mediaCodes = {
+    mediaUploadError: "media-upload-error",
     invalidMultipartNumber: "invalid-multipart-upload-part-number",
     mediaObjectNotFound: "object-not-found",
     mediaTooLarge: "media-too-large",
@@ -15,8 +16,8 @@ export const mediaCodes = {
     missingETagValue: "missing-etag-value",
 } as const;
 
-export const mediaOverrides: ErrorNormalization = {
-    code: "media-upload-error",
+export const mediaOverrides = {
+    code: mediaCodes.mediaUploadError,
     items: [
         mediaCodes.invalidMultipartNumber,
         mediaCodes.uploadAlreadyCompleted,
@@ -26,4 +27,4 @@ export const mediaOverrides: ErrorNormalization = {
         mediaCodes.multipartPartUploadFailed,
         mediaCodes.missingETagValue,
     ],
-} as const;
+} as const satisfies ErrorNormalization;

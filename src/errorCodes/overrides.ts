@@ -7,7 +7,7 @@ import { paginationOverrides } from "./pagination";
 import { reqBodyOverrides } from "./reqBody";
 import { serverOverrides } from "./server";
 
-export const defaultOverrides: readonly ErrorNormalization[] = [
+export const defaultOverrides = [
     authOverrides,
     signedURLOverrides,
     commonOverrides,
@@ -16,4 +16,7 @@ export const defaultOverrides: readonly ErrorNormalization[] = [
     paginationOverrides,
     reqBodyOverrides,
     serverOverrides,
-] as const;
+] as const satisfies readonly ErrorNormalization[];
+
+export type DefaultOverrideCode =
+    (typeof defaultOverrides)[number]["items"][number];

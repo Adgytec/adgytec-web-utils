@@ -1,6 +1,10 @@
 import z from "zod";
 import { mediaCodes } from "../errorCodes";
 
+export const mediaUploadErrorSchema = z.object({
+    code: z.literal(mediaCodes.mediaUploadError),
+});
+
 export const invalidMultipartNumberSchema = z.object({
     code: z.literal(mediaCodes.invalidMultipartNumber),
 });

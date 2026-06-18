@@ -12,3 +12,18 @@ export const routeNotFoundSchema = z.object({
 export const methodNotAllowedSchema = z.object({
     code: z.literal(commonCodes.methodNotAllowed),
 });
+
+export const networkErrorSchema = z.object({
+    code: z.literal(commonCodes.networkError),
+    debugMessage: z.string(),
+});
+
+export const unexpectedErrorSchema = z.object({
+    code: z.literal(commonCodes.unexpectedError),
+    debugMessage: z.string(),
+});
+
+export const zodErrorSchema = z.object({
+    code: z.literal(commonCodes.zodError),
+    error: z.instanceof(z.ZodError),
+});

@@ -1,6 +1,10 @@
 import z from "zod";
 import { authCodes } from "../errorCodes";
 
+export const authErrorSchema = z.object({
+    code: z.literal(authCodes.authError),
+});
+
 export const invalidApiKeySchema = z.object({
     code: z.literal(authCodes.invalidApiKey),
 });

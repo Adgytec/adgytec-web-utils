@@ -9,11 +9,11 @@ export const serverCodes = {
     internalServerError: "internal-server-error",
 } as const;
 
-export const serverOverrides: ErrorNormalization = {
+export const serverOverrides = {
     code: commonCodes.unexpectedError,
     items: [
         serverCodes.malformedJsonFromServer,
         serverCodes.malformedResponseBody,
         serverCodes.invalidResponseShape,
     ],
-} as const;
+} as const satisfies ErrorNormalization;

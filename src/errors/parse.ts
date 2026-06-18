@@ -4,22 +4,7 @@ import { commonCodes } from "../errorCodes";
 import type { ErrorDetails } from "../errorSchema";
 import { ApplicationError } from "./applicationError";
 
-export type ParseErrorResponse =
-    | {
-          code: typeof commonCodes.networkError;
-          debugMessage: string;
-      }
-    | {
-          code: typeof commonCodes.unexpectedError;
-          debugMessage: string;
-      }
-    | {
-          code: typeof commonCodes.zodError;
-          error: z.ZodError;
-      }
-    | ErrorDetails;
-
-export function parseError(err: unknown): ParseErrorResponse {
+export function parseError(err: unknown): ErrorDetails {
     if (isNetworkError(err)) {
         return {
             code: commonCodes.networkError,

@@ -34,7 +34,7 @@ export async function decodeAPIResponse<T>(
 
     let payload: unknown;
     if (raw.length > 0) {
-        const contentType = res.headers.get("content-type");
+        const contentType = res.headers.get("content-type")?.toLowerCase();
         if (
             !contentType?.includes(
                 httpReqHeaders.contentType.valueApplicationJSON

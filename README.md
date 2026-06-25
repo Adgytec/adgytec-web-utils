@@ -19,6 +19,7 @@ Explore the detailed documentation and code references for each subsystem:
 | **Errors** | Structured `ApplicationError` classes and parsing pipelines. | [errors.md](src/errors/errors.md) |
 | **Forms** | Dotted-key nested form extraction and automatic validation. | [forms.md](src/forms/forms.md) |
 | **Media Uploads** | Multi-threaded singlepart & chunked multipart direct cloud uploads. | [media.md](src/media/media.md) |
+| **Pagination** | Models and types for cursor-based pagination. | [pagination.md](src/pagination/pagination.md) |
 | **API Response** | Native `fetch` response decoders, validators, and error catchers. | [response.md](src/response/response.md) |
 
 ---

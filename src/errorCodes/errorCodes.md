@@ -25,6 +25,9 @@ Authentication and signed URL error codes.
 | `userDisabled` | `"user-disabled"` | User account is deactivated. |
 | `tokenNotFound` | `"token-not-found"` | The authentication token is missing. |
 | `unsupportedAuthScheme` | `"unsupported-auth-scheme"` | The authorization scheme is not supported. |
+| `invalidJWT` | `"invalid-jwt"` | The provided JSON Web Token signature or structure is invalid. |
+| `invalidSession` | `"invalid-session"` | The session is invalid, expired, or deactivated. |
+| `tokenExpired` | `"token-expired"` | The authentication token has expired. |
 
 ---
 
@@ -222,7 +225,7 @@ Override objects are used by `normalizeError` to map granular child errors into 
 
 | Export / Group | Parent Code (`code`) | Collapsed Child Codes (`items`) |
 | --- | --- | --- |
-| `authOverrides` | `auth-error` | `invalid-api-key`, `jwt-not-acceptable`, `invalid-auth-header-value`, `unsupported-auth-scheme`, `token-not-found` |
+| `authOverrides` | `auth-error` | `invalid-api-key`, `jwt-not-acceptable`, `invalid-auth-header-value`, `unsupported-auth-scheme`, `token-not-found`, `invalid-jwt`, `invalid-session`, `token-expired` |
 | `signedURLOverrides` | `invalid-signed-url` | `hash-mismatch` |
 | `commonOverrides` | `unexpected-error` | `invalid-id`, `route-not-found`, `method-not-allowed`, `zod-error` |
 | `iamOverrides` | `authorization-error` | `self-permission-mismatch`, `invalid-actor` |

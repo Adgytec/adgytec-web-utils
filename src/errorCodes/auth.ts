@@ -15,6 +15,9 @@ export const authCodes = {
     userNotExistInOrganization: "user-not-exists-in-organization",
     userDisabled: "user-disabled",
     tokenNotFound: "token-not-found",
+    invalidJWT: "invalid-jwt",
+    invalidSession: "invalid-session",
+    tokenExpired: "token-expired",
 } as const;
 
 export const authOverrides = {
@@ -25,6 +28,9 @@ export const authOverrides = {
         authCodes.invalidAuthHeaderValue,
         authCodes.unsupportedAuthScheme,
         authCodes.tokenNotFound,
+        authCodes.invalidJWT,
+        authCodes.invalidSession,
+        authCodes.tokenExpired,
     ],
 } as const satisfies ErrorNormalization;
 

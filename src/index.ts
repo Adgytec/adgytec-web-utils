@@ -6,4 +6,5 @@ export * from "./errorSchema";
 export * from "./errors";
 export * from "./forms";
 export * from "./media";
+export * from "./pagination";
 export * from "./response";

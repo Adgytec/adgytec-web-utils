@@ -83,6 +83,9 @@ Schemas validating authentication, API key, and JWT token signatures.
 | `userNotExistInOrganizationSchema` | `"user-not-exists-in-organization"` | None |
 | `userDisabledSchema` | `"user-disabled"` | None |
 | `tokenNotFoundSchema` | `"token-not-found"` | None |
+| `invalidJWTSchema` | `"invalid-jwt"` | None |
+| `invalidSessionSchema` | `"invalid-session"` | None |
+| `tokenExpiredSchema` | `"token-expired"` | None |
 
 ---
 

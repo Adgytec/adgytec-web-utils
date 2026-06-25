@@ -52,3 +52,15 @@ export const userDisabledSchema = z.object({
 export const tokenNotFoundSchema = z.object({
     code: z.literal(authCodes.tokenNotFound),
 });
+
+export const invalidJWTSchema = z.object({
+    code: z.literal(authCodes.invalidJWT),
+});
+
+export const invalidSessionSchema = z.object({
+    code: z.literal(authCodes.invalidSession),
+});
+
+export const tokenExpiredSchema = z.object({
+    code: z.literal(authCodes.tokenExpired),
+});

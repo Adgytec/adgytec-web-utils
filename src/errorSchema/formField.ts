@@ -93,25 +93,25 @@ export const fieldValidationErrorSchemas = {
     minGreaterEqualThanRequired: z.object({
         code: z.literal(fieldValidationCodes.minGreaterEqualThanRequired),
         debugMessage: z.string(),
-        threshold: z.union([z.coerce.date(), z.number()]),
+        threshold: z.union([z.number(), z.coerce.date()]),
     }),
 
     maxLessEqualThanRequired: z.object({
         code: z.literal(fieldValidationCodes.maxLessEqualThanRequired),
         debugMessage: z.string(),
-        threshold: z.union([z.coerce.date(), z.number()]),
+        threshold: z.union([z.number(), z.coerce.date()]),
     }),
 
     minGreaterThanRequired: z.object({
         code: z.literal(fieldValidationCodes.minGreaterThanRequired),
         debugMessage: z.string(),
-        threshold: z.union([z.coerce.date(), z.number()]),
+        threshold: z.union([z.number(), z.coerce.date()]),
     }),
 
     maxLessThanRequired: z.object({
         code: z.literal(fieldValidationCodes.maxLessThanRequired),
         debugMessage: z.string(),
-        threshold: z.union([z.coerce.date(), z.number()]),
+        threshold: z.union([z.number(), z.coerce.date()]),
     }),
 
     required: z.object({

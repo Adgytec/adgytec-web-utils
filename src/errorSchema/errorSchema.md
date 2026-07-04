@@ -139,7 +139,7 @@ const responsePayload = {
         {
           key: "email",
           errors: [
-            { type: "invalid", details: { cause: "invalid-email" } }
+            { code: "validation_is_email", debugMessage: "Invalid email address" }
           ]
         },
         {
@@ -148,7 +148,7 @@ const responsePayload = {
             {
               key: "age",
               errors: [
-                { type: "underflow", details: { min: 18 } }
+                { code: "validation_min_greater_equal_than_required", debugMessage: "Must be 18 or older", threshold: 18 }
               ]
             }
           ]
@@ -169,16 +169,32 @@ if (result.success) {
 
 ## Form Field Schemas and Types
 
-`formFieldDiscriminatedUnionSchema` (inferred as type `FormFieldError`) validates individual field validation failures using a `"type"` discriminator.
+`formFieldDiscriminatedUnionSchema` (inferred as type `FormFieldError`) validates individual field validation failures using a `"code"` discriminator.
 
-| Export Schema | Type Value | Details Shape |
+All errors contain:
+- `code`: The field validation error code (from `fieldValidationCodes`).
+- `debugMessage`: A developer-friendly error message.
+
+Certain codes include additional validation metadata fields:
+
+| Code Value (`code`) | Additional Fields | Description |
 | --- | --- | --- |
-| `fieldUnknownValidationErrorSchema` | `"unknown"` | None |
-| `fieldMissingErrorSchema` | `"missing"` | None |
-| `fieldOverflowErrorSchema` | `"overflow"` | `{ max: Date \| number }` |
-| `fieldUnderflowErrorSchema` | `"underflow"` | `{ min: Date \| number }` |
-| `fieldLengthErrorSchema` | `"length"` | `{ min: number; max: number }` |
-| `fieldInvalidSchema` | `"invalid"` | `formFieldInvalidDiscriminatedUnion` |
+| `"validation_date_too_early"` | `min: Date`, `debugMin: string` | Date is earlier than minimum. |
+| `"validation_date_too_late"` | `max: Date`, `debugMax: string` | Date is later than maximum. |
+| `"validation_date_out_of_range"` | `min: Date`, `max: Date`, `debugMin: string`, `debugMax: string` | Date is out of the specified range. |
+| `"validation_length_too_long"` | `max: number` | Value exceeds maximum length. |
+| `"validation_length_too_short"` | `min: number` | Value is below minimum length. |
+| `"validation_length_invalid"` | `min: number` | Value length does not match exact constraints. |
+| `"validation_length_out_of_range"` | `min: number`, `max: number` | Value length is outside constraints. |
+| `"validation_min_greater_equal_than_required"` | `threshold: Date \| number` | Value must be greater than or equal to threshold. |
+| `"validation_max_less_equal_than_required"` | `threshold: Date \| number` | Value must be less than or equal to threshold. |
+| `"validation_min_greater_than_required"` | `threshold: Date \| number` | Value must be strictly greater than threshold. |
+| `"validation_max_less_than_required"` | `threshold: Date \| number` | Value must be strictly less than threshold. |
+| `"validation_in_invalid"` | `valid: unknown[]` | Value must be one of the specified allowed values. |
+| `"validation_multiple_of_invalid"` | `base: number` | Value must be a multiple of base. |
+| `"validation_not_in_invalid"` | `valid: unknown[]` | Value must not be one of the specified values. |
+
+All other codes (e.g. format checks like `"validation_is_email"`, `"validation_is_uuid"`, etc.) contain only `code` and `debugMessage`.
 
 ### Example Usage
 
@@ -186,53 +202,14 @@ if (result.success) {
 import { formFieldDiscriminatedUnionSchema } from "adgytec-web-utils";
 
 const singleFieldError = {
-  type: "overflow",
-  details: { max: 10 },
+  code: "validation_length_too_long",
+  debugMessage: "Length exceeds maximum of 10 characters",
+  max: 10,
 };
 
 const parsed = formFieldDiscriminatedUnionSchema.safeParse(singleFieldError);
 if (parsed.success) {
-  console.log("Field size exceeded maximum limit of:", parsed.data.details.max);
-}
-```
-
----
-
-## Form Field Invalid Cause Schemas
-
-`formFieldInvalidDiscriminatedUnion` handles cases where a field value format is invalid, using the `"cause"` field as a discriminator.
-
-| Export Schema | Cause Value | Additional Fields |
-| --- | --- | --- |
-| `invalidValueErrorSchema` | `"invalid-value"` | None |
-| `invalidEnumValueErrorSchema` | `"invalid-enum-value"` | `possibleValues: string[]` |
-| `requireHttpsErrorSchema` | `"require-https"` | None |
-| `missingHostErrorSchema` | `"missing-host"` | None |
-| `containsPathErrorSchema` | `"contains-path"` | None |
-| `containsQueryErrorSchema` | `"contains-query"` | None |
-| `containsFragmentErrorSchema` | `"contains-fragment"` | None |
-| `absoluteUrlErrorSchema` | `"absolute-url"` | None |
-| `nilIDErrorSchema` | `"nil-id"` | None |
-| `invalidEmailErrorSchema` | `"invalid-email"` | None |
-| `missingMxRecordsErrorSchema` | `"missing-mx-records"` | None |
-| `notDigitErrorSchema` | `"not-digit"` | None |
-| `notBase64UrlEncodedErrorSchema`| `"not-base64-url-encoded"` | None |
-| `invalidUrlErrorSchema` | `"invalid-url"` | None |
-| `nullValueErrorSchema` | `"null-value"` | None |
-
-### Example Usage
-
-```ts
-import { formFieldInvalidDiscriminatedUnion } from "adgytec-web-utils";
-
-const responseCause = {
-  cause: "invalid-enum-value",
-  possibleValues: ["Admin", "Member", "Viewer"],
-};
-
-const parsed = formFieldInvalidDiscriminatedUnion.safeParse(responseCause);
-if (parsed.success && parsed.data.cause === "invalid-enum-value") {
-  console.log("Allowed values:", parsed.data.possibleValues.join(", "));
+  console.log("Field size exceeded maximum limit of:", parsed.data.max);
 }
 ```
 

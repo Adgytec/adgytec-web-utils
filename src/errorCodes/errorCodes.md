@@ -69,42 +69,93 @@ This is the top-level code returned by `formValidationFailedSchema`.
 
 ---
 
-## `formFieldTypes`
+## `fieldValidationCodes`
 
-Form field error type constants describing the shape of failures in `FlattenedErrors`.
-
-| Key | Code | Description |
-| --- | --- | --- |
-| `missing` | `"missing"` | The field is required but was not provided. |
-| `overflow` | `"overflow"` | The value exceeds the allowed maximum bound. |
-| `underflow` | `"underflow"` | The value is below the allowed minimum bound. |
-| `length` | `"length"` | The value length does not match exact constraints. |
-| `invalid` | `"invalid"` | The field value is formatted incorrectly (e.g., bad email). |
-| `unknown` | `"unknown"` | An uncategorized validation error occurred. |
-
----
-
-## `formFieldInvalidTypeCauses`
-
-Field-invalid cause constants. The `invalid` field type uses one of these causes to explain why a value is not acceptable.
+Field validation error codes describing the shape of failures in `FlattenedErrors`.
 
 | Key | Code | Description |
 | --- | --- | --- |
-| `invalidValue` | `"invalid-value"` | Generic invalid value. |
-| `invalidEnumValue` | `"invalid-enum-value"` | Value is not one of the allowed options. |
-| `requireHttps` | `"require-https"` | Protocol must be HTTPS. |
-| `missingHost` | `"missing-host"` | Hostname is missing from the URI. |
-| `containsPath` | `"contains-path"` | URI must not contain a path segment. |
-| `containsQuery` | `"contains-query"` | URI must not contain a query string. |
-| `containsFragment` | `"contains-fragment"` | URI must not contain a hash fragment. |
-| `absoluteUrl` | `"absolute-url"` | URL must be absolute. |
-| `nilID` | `"nil-id"` | ID cannot be a nil/empty UUID. |
-| `invalidEmail` | `"invalid-email"` | Email format is invalid. |
-| `missingMxRecords` | `"missing-mx-records"` | Email domain does not have valid MX records. |
-| `notDigit` | `"not-digit"` | Value must contain only numeric digits. |
-| `notBase64UrlEncoded` | `"not-base64-url-encoded"` | Value is not base64url encoded. |
-| `invalidUrl` | `"invalid-url"` | URL format is invalid. |
-| `nullValue` | `"null-value"` | Field cannot be null. |
+| `unknown` | `"unknown-error"` | An uncategorized validation error occurred. |
+| `nil` | `"validation_nil"` | Value cannot be nil. |
+| `empty` | `"validation_empty"` | Value cannot be empty. |
+| `dateInvalid` | `"validation_date_invalid"` | Provided date is invalid. |
+| `dateTooEarly` | `"validation_date_too_early"` | Provided date is earlier than allowed minimum. |
+| `dateTooLate` | `"validation_date_too_late"` | Provided date is later than allowed maximum. |
+| `dateOutOfRange` | `"validation_date_out_of_range"` | Provided date is out of allowable range. |
+| `lengthTooLong` | `"validation_length_too_long"` | Value length exceeds the maximum limit. |
+| `lengthTooShort` | `"validation_length_too_short"` | Value length is below the minimum limit. |
+| `lengthInvalid` | `"validation_length_invalid"` | Value length does not match exact constraints. |
+| `lengthOutOfRange` | `"validation_length_out_of_range"` | Value length is out of range. |
+| `lengthEmptyRequired` | `"validation_length_empty_required"` | Value cannot be empty when length constraint is set. |
+| `keyWrongType` | `"validation_key_wrong_type"` | Key value has an incorrect type. |
+| `keyMissing` | `"validation_key_missing"` | Required key is missing. |
+| `keyUnexpected` | `"validation_key_unexpected"` | Unexpected key is present. |
+| `minGreaterEqualThanRequired` | `"validation_min_greater_equal_than_required"` | Value must be greater than or equal to the minimum. |
+| `maxLessEqualThanRequired` | `"validation_max_less_equal_than_required"` | Value must be less than or equal to the maximum. |
+| `minGreaterThanRequired` | `"validation_min_greater_than_required"` | Value must be strictly greater than the minimum. |
+| `maxLessThanRequired` | `"validation_max_less_than_required"` | Value must be strictly less than the maximum. |
+| `required` | `"validation_required"` | Field is required. |
+| `nilOrNotEmptyRequired` | `"validation_nil_or_not_empty_required"` | Field must not be nil or empty. |
+| `inInvalid` | `"validation_in_invalid"` | Value must be in the specified list of allowed values. |
+| `matchInvalid` | `"validation_match_invalid"` | Value does not match required format or regex pattern. |
+| `multipleOfInvalid` | `"validation_multiple_of_invalid"` | Value must be a multiple of the specified number. |
+| `notInInvalid` | `"validation_not_in_invalid"` | Value must not be in the specified list of forbidden values. |
+| `notNilRequired` | `"validation_not_nil_required"` | Value must not be nil. |
+| `isEmail` | `"validation_is_email"` | Value must be a valid email address. |
+| `isURL` | `"validation_is_url"` | Value must be a valid URL. |
+| `isRequestURL` | `"validation_is_request_url"` | Value must be a valid request URL. |
+| `requestIsRequestURI` | `"validation_request_is_request_uri"` | Value must be a valid request URI. |
+| `isAlpha` | `"validation_is_alpha"` | Value must contain only alphabetic characters. |
+| `isDigit` | `"validation_is_digit"` | Value must contain only digit characters. |
+| `isAlphanumeric` | `"validation_is_alphanumeric"` | Value must contain only alphanumeric characters. |
+| `isUTFLetter` | `"validation_is_utf_letter"` | Value must contain only UTF letters. |
+| `isUTFDigit` | `"validation_is_utf_digit"` | Value must contain only UTF digits. |
+| `isUTFLetterNumeric` | `"validation_is utf_letter_numeric"` | Value must contain only UTF letters or digits. |
+| `isUTFNumeric` | `"validation_is_utf_numeric"` | Value must contain only UTF numeric characters. |
+| `isLowerCase` | `"validation_is_lower_case"` | Value must be in lower case. |
+| `isUpperCase` | `"validation_is_upper_case"` | Value must be in upper case. |
+| `isHexadecimal` | `"validation_is_hexadecimal"` | Value must be a valid hexadecimal string. |
+| `isHexColor` | `"validation_is_hex_color"` | Value must be a valid hexadecimal color code. |
+| `isRGBColor` | `"validation_is_rgb_color"` | Value must be a valid RGB color code. |
+| `isInt` | `"validation_is_int"` | Value must be an integer. |
+| `isFloat` | `"validation_is_float"` | Value must be a floating point number. |
+| `isUUIDv3` | `"validation_is_uuid_v3"` | Value must be a valid UUID version 3. |
+| `isUUIDv4` | `"validation_is_uuid_v4"` | Value must be a valid UUID version 4. |
+| `isUUIDv5` | `"validation_is_uuid_v5"` | Value must be a valid UUID version 5. |
+| `isUUID` | `"validation_is_uuid"` | Value must be a valid UUID. |
+| `isCreditCard` | `"validation_is_credit_card"` | Value must be a valid credit card number. |
+| `isISBN10` | `"validation_is_isbn_10"` | Value must be a valid ISBN-10 number. |
+| `isISBN13` | `"validation_is_isbn_13"` | Value must be a valid ISBN-13 number. |
+| `isISBN` | `"validation_is_isbn"` | Value must be a valid ISBN number. |
+| `isJSON` | `"validation_is_json"` | Value must be a valid JSON string. |
+| `isASCII` | `"validation_is_ascii"` | Value must contain only ASCII characters. |
+| `isPrintableASCII` | `"validation_is_printable_ascii"` | Value must contain only printable ASCII characters. |
+| `isMultibyte` | `"validation_is_multibyte"` | Value must contain multibyte characters. |
+| `isFullWidth` | `"validation_is_full_width"` | Value must contain full-width characters. |
+| `isHalfWidth` | `"validation_is_half_width"` | Value must contain half-width characters. |
+| `isVariableWidth` | `"validation_is_variable_width"` | Value must contain variable-width characters. |
+| `isBase64` | `"validation_is_base64"` | Value must be a valid Base64 encoded string. |
+| `isDataURI` | `"validation_is_data_uri"` | Value must be a valid Data URI. |
+| `isE164Number` | `"validation_is_e164_number"` | Value must be a valid E.164 phone number. |
+| `isCountryCode2Letter` | `"validation_is_country_code_2_letter"` | Value must be a valid 2-letter ISO country code. |
+| `isCountryCode3Letter` | `"validation_is_country_code_3_letter"` | Value must be a valid 3-letter ISO country code. |
+| `isCurrencyCode` | `"validation_is_currency_code"` | Value must be a valid 3-letter ISO currency code. |
+| `isDialString` | `"validation_is_dial_string"` | Value must be a valid dial string. |
+| `isMACAddress` | `"validation_is_mac_address"` | Value must be a valid MAC address. |
+| `isIP` | `"validation_is_ip"` | Value must be a valid IP address. |
+| `isIPv4` | `"validation_is_ipv4"` | Value must be a valid IPv4 address. |
+| `isIPv6` | `"validation_is_ipv6"` | Value must be a valid IPv6 address. |
+| `isSubDomain` | `"validation_is_sub_domain"` | Value must be a valid subdomain. |
+| `isDomain` | `"validation_is_domain"` | Value must be a valid domain. |
+| `isDNSName` | `"validation_is_dns_name"` | Value must be a valid DNS name. |
+| `isHost` | `"validation_is_host"` | Value must be a valid host (domain or IP). |
+| `isPort` | `"validation_is_port"` | Value must be a valid port number. |
+| `isMongoID` | `"validation_is_mongo_id"` | Value must be a valid MongoDB ObjectID. |
+| `isLatitude` | `"validation_is_latitude"` | Value must be a valid latitude coordinate. |
+| `isLongitude` | `"validation_is_longitude"` | Value must be a valid longitude coordinate. |
+| `isSSN` | `"validation_is_ssn"` | Value must be a valid Social Security Number. |
+| `isSemver` | `"validation_is_semver"` | Value must be a valid semantic version. |
+
 
 ---
 

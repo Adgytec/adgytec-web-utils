@@ -75,7 +75,7 @@ formEl.addEventListener("submit", (event) => {
     console.log("Form successfully validated! Data:", result.data);
     submitDataToServer(result.data);
   } else {
-    // result.errors is a FlattenedErrors record: Record<string, FormFieldError[]>
+    // result.errors is a FlattenedErrors record: Record<string, (FormFieldError | ZodIssue)[]>
     console.warn("Validation failed:", result.errors);
     
     // Display error messages using the dotted keys
@@ -175,9 +175,48 @@ export type ValidateAndGetFormValues = <T extends z.ZodTypeAny>(
 
 ### `FlattenedErrors`
 
-Flat key-value record maps dotted field strings to arrays of `FormFieldError`.
+Flat key-value record maps dotted field strings to arrays of `FormFieldError` (for server-side errors) or `ZodIssue` (for client-side validation errors).
 
 ```ts
-export type FlattenedErrors = Record<string, FormFieldError[]>;
+export type FlattenedErrors = Record<string, (FormFieldError | ZodIssue)[]>;
+```
+
+### Extended Zod Issue Types (`ZodIssue`)
+
+To better support custom error handling, the client-side validation outputs normalized `ZodIssue` shapes with extended issue subtypes.
+
+```ts
+export interface ZodIssueStringTooShort
+    extends Omit<z.core.$ZodIssueTooSmall, "code" | "origin"> {
+    readonly code: "string_too_short";
+    readonly origin: "string";
+}
+
+export interface ZodIssueStringTooLong
+    extends Omit<z.core.$ZodIssueTooBig, "code" | "origin"> {
+    readonly code: "string_too_long";
+    readonly origin: "string";
+}
+
+export interface ZodIssueDateTooSmall
+    extends Omit<z.core.$ZodIssueTooSmall, "code" | "origin" | "minimum"> {
+    readonly code: "date_too_small";
+    readonly origin: "date";
+    readonly minimum: Date;
+}
+
+export interface ZodIssueDateTooBig
+    extends Omit<z.core.$ZodIssueTooBig, "code" | "origin" | "maximum"> {
+    readonly code: "date_too_big";
+    readonly origin: "date";
+    readonly maximum: Date;
+}
+
+export type ZodIssue =
+    | z.core.$ZodIssue
+    | ZodIssueDateTooBig
+    | ZodIssueDateTooSmall
+    | ZodIssueStringTooLong
+    | ZodIssueStringTooShort;
 ```
 

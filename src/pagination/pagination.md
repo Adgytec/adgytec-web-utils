@@ -1,81 +1,118 @@
 # Pagination
 
-Models and types for cursor-based pagination.
+Utilities and schemas for implementing cursor-based pagination.
 
-These models provide a standard, type-safe contract for building and consuming cursor-paginated APIs.
+These models provide a standard, type-safe contract for building and consuming cursor-paginated APIs. They are also available as Zod schemas for runtime validation.
 
 ---
 
-## Models
+## Schemas
+
+### `PageInfoSchema`
+
+Represents metadata about the current page.
+
+```ts
+const PageInfoSchema = z.object({
+  hasNextPage: z.boolean(),
+  nextCursor: z.string().nullable(),
+  hasPrevPage: z.boolean(),
+  prevCursor: z.string().nullable(),
+});
+```
+
+### `PageItemWithCursorSchema`
+
+Creates a schema for a paginated item.
+
+```ts
+const ProductSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+});
+
+const ProductPageItemSchema = PageItemWithCursorSchema(ProductSchema);
+```
+
+### `PageSchema`
+
+Creates a schema for a complete paginated response.
+
+```ts
+const ProductPageSchema = PageSchema(ProductSchema);
+```
+
+---
+
+## Types
+
+All pagination types are inferred directly from the corresponding schemas.
 
 ### `PageInfo`
 
-Contains metadata about the current page's position and navigation links.
-
 ```ts
-export type PageInfo = {
-  readonly hasNextPage: boolean;
-  readonly nextCursor: string | null;
-  readonly hasPrevPage: boolean;
-  readonly prevCursor: string | null;
-};
+type PageInfo = z.infer<typeof PageInfoSchema>;
 ```
 
-### `PageItemWithCursor`
-
-A single item in the page accompanied by its cursor, allowing granular cursor reference.
+### `PageItemWithCursor<T>`
 
 ```ts
-export type PageItemWithCursor<T> = {
-  readonly cursor: string;
-  readonly item: T;
-};
+type PageItemWithCursor<T extends z.ZodType> =
+  z.infer<ReturnType<typeof PageItemWithCursorSchema<T>>>;
 ```
 
-### `Page`
-
-The standard response model for a paginated list endpoint.
+### `Page<T>`
 
 ```ts
-export type Page<T> = {
-  readonly pageInfo: PageInfo;
-  readonly pageItems: readonly PageItemWithCursor<T>[];
-};
+type Page<T extends z.ZodType> =
+  z.infer<ReturnType<typeof PageSchema<T>>>;
 ```
 
 ---
 
 ## Errors and Validation
 
-When handling invalid cursor requests (e.g., malformed cursor string, expired token encoding in cursor), the server may return an error conforming to the `invalidCursorValueSchema`:
+When handling invalid cursor requests (for example, malformed cursor values or expired cursor encodings), the server may return an error conforming to:
 
-- **Error Code**: `"invalid-cursor-value"`
-- **Schema**: `invalidCursorValueSchema`
+- **Error Code:** `"invalid-cursor-value"`
+- **Schema:** `invalidCursorValueSchema`
 
 ---
 
 ## Example Usage
 
 ```ts
-import type { Page } from "adgytec-web-utils";
+import { z } from "zod";
+import {
+  PageSchema,
+  type Page,
+} from "@adgytec/adgytec-web-utils";
 
-interface Product {
-  id: string;
-  title: string;
-  price: number;
-}
+const ProductSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+  price: z.number(),
+});
 
-async function fetchProducts(cursor: string | null = null): Promise<Page<Product>> {
+type ProductPage = Page<typeof ProductSchema>;
+
+async function fetchProducts(
+  cursor: string | null = null,
+): Promise<ProductPage> {
   const url = new URL("/api/products", window.location.origin);
+
   if (cursor) {
     url.searchParams.set("cursor", cursor);
   }
+
   url.searchParams.set("limit", "20");
 
   const res = await fetch(url.toString());
+
   if (!res.ok) {
     throw new Error("Failed to fetch products");
   }
-  return res.json();
+
+  return PageSchema(ProductSchema).parse(await res.json());
 }
 ```

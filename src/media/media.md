@@ -207,6 +207,78 @@ await uploadItems(
 
 ## Supporting Type Definitions
 
+### `Media`
+
+Represents a processed media asset returned by the backend.
+
+```ts
+type Media = {
+  originalMedia: string;
+  mimeType: string;
+  size: number;
+  status: MediaStatus;
+  imageVariants?: Image;
+  videoDetails?: Video;
+};
+```
+
+#### `MediaStatus`
+
+Represents the current processing state of a media asset.
+
+```ts
+type MediaStatus =
+  | "pending"
+  | "complete-multipart-success"
+  | "complete-multipart-failed"
+  | "validating"
+  | "validation-failed"
+  | "validation-success"
+  | "processing"
+  | "processing-failed"
+  | "completed";
+```
+
+#### `Image`
+
+Image variant URLs generated during processing.
+
+```ts
+type Image = {
+  thumbnail: string;
+  small: string;
+  medium: string;
+  large: string;
+  extraLarge: string;
+};
+```
+
+| Property | Description |
+| -------- | ----------- |
+| `thumbnail` | Small preview image suitable for avatars and lists. |
+| `small` | Small optimized image for low-resolution displays. |
+| `medium` | Medium-sized image for typical application views. |
+| `large` | High-resolution image for detailed viewing. |
+| `extraLarge` | Largest available optimized image. |
+
+#### `Video`
+
+Processed video resources.
+
+```ts
+type Video = {
+  thumbnail: string;
+  adaptiveManifest: string;
+  preview: string;
+};
+```
+
+| Property | Description |
+| -------- | ----------- |
+| `thumbnail` | Preview image representing the video. |
+| `adaptiveManifest` | Adaptive streaming manifest (for example HLS/DASH) used for playback. |
+| `preview` | Short preview clip generated during processing. |
+
 ### `MediaInfo`
 Describes a verified local file target.
 ```ts

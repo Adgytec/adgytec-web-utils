@@ -15,9 +15,10 @@ export const PageItemWithCursorSchema = <T extends z.ZodType>(itemSchema: T) =>
         item: itemSchema,
     });
 
-export type PageItemWithCursor<T extends z.ZodType> = z.infer<
-    ReturnType<typeof PageItemWithCursorSchema<T>>
->;
+export type PageItemWithCursor<T extends z.ZodType> = {
+    readonly cursor: string;
+    readonly item: z.output<T>;
+};
 
 export const PageSchema = <T extends z.ZodType>(itemSchema: T) =>
     z.object({
@@ -25,6 +26,7 @@ export const PageSchema = <T extends z.ZodType>(itemSchema: T) =>
         pageItems: z.array(PageItemWithCursorSchema(itemSchema)),
     });
 
-export type Page<T extends z.ZodType> = z.infer<
-    ReturnType<typeof PageSchema<T>>
->;
+export type Page<T extends z.ZodType> = {
+    readonly pageInfo: PageInfo;
+    readonly pageItems: readonly PageItemWithCursor<T>[];
+};

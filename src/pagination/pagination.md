@@ -57,15 +57,19 @@ type PageInfo = z.infer<typeof PageInfoSchema>;
 ### `PageItemWithCursor<T>`
 
 ```ts
-type PageItemWithCursor<T extends z.ZodType> =
-  z.infer<ReturnType<typeof PageItemWithCursorSchema<T>>>;
+type PageItemWithCursor<T extends z.ZodType> = {
+    readonly cursor: string;
+    readonly item: z.output<T>;
+}
 ```
 
 ### `Page<T>`
 
 ```ts
-type Page<T extends z.ZodType> =
-  z.infer<ReturnType<typeof PageSchema<T>>>;
+type Page<T extends z.ZodType> = {
+    readonly pageInfo: PageInfo;
+    readonly pageItems: readonly PageItemWithCursor<T>[];
+}
 ```
 
 ---

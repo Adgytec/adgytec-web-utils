@@ -1,19 +1,19 @@
 import { z } from "zod";
 
 export const ImageSchema = z.object({
-    thumbnail: z.string(),
-    small: z.string(),
-    medium: z.string(),
-    large: z.string(),
-    extraLarge: z.string(),
+    thumbnail: z.url(),
+    small: z.url(),
+    medium: z.url(),
+    large: z.url(),
+    extraLarge: z.url(),
 });
 
 export type Image = z.infer<typeof ImageSchema>;
 
 export const VideoSchema = z.object({
-    thumbnail: z.string(),
-    adaptiveManifest: z.string(),
-    preview: z.string(),
+    thumbnail: z.url(),
+    adaptiveManifest: z.url(),
+    preview: z.url(),
 });
 
 export type Video = z.infer<typeof VideoSchema>;

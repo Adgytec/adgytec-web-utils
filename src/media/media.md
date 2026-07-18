@@ -216,18 +216,18 @@ type Media = {
   originalMedia: string;
   mimeType: string;
   size: number;
-  status: GlobalMediaStatus;
+  status: MediaStatus;
   imageVariants?: Image;
   videoDetails?: Video;
 };
 ```
 
-#### `GlobalMediaStatus`
+#### `MediaStatus`
 
 Represents the current processing state of a media asset.
 
 ```ts
-type GlobalMediaStatus =
+type MediaStatus =
   | "pending"
   | "complete-multipart-success"
   | "complete-multipart-failed"

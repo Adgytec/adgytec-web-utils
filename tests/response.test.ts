@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import * as z from "zod";
 import { httpReqHeaders } from "../src/constants";
-import { mediaCodes, serverCodes } from "../src/errorCodes";
+import { mediaCodes, miscCodes } from "../src/errorCodes";
 import { ApplicationError } from "../src/errors";
 import { decodeAPIResponse } from "../src/response";
 
@@ -46,7 +46,7 @@ test("decodeAPIResponse rejects invalid success payload shapes", async () => {
             assert.equal(error instanceof ApplicationError, true);
             assert.equal(
                 (error as ApplicationError).code,
-                serverCodes.invalidResponseShape
+                miscCodes.invalidResponseShape
             );
 
             return true;
@@ -69,7 +69,7 @@ test("decodeAPIResponse rejects malformed and non-JSON response bodies", async (
             assert.equal(error instanceof ApplicationError, true);
             assert.equal(
                 (error as ApplicationError).code,
-                serverCodes.malformedJsonFromServer
+                miscCodes.malformedJsonFromServer
             );
 
             return true;
@@ -88,7 +88,7 @@ test("decodeAPIResponse rejects malformed and non-JSON response bodies", async (
             assert.equal(error instanceof ApplicationError, true);
             assert.equal(
                 (error as ApplicationError).code,
-                serverCodes.invalidResponseShape
+                miscCodes.invalidResponseShape
             );
 
             return true;
@@ -102,10 +102,11 @@ test("decodeAPIResponse converts error responses into ApplicationError instances
             decodeAPIResponse(
                 new Response(
                     JSON.stringify({
-                        code: mediaCodes.mediaObjectNotFound,
+                        code: mediaCodes.duplicatedMediaID,
+                        MediaID: "some-media-id",
                     }),
                     {
-                        status: 404,
+                        status: 409,
                         headers: jsonHeaders,
                     }
                 )
@@ -114,7 +115,7 @@ test("decodeAPIResponse converts error responses into ApplicationError instances
             assert.equal(error instanceof ApplicationError, true);
             assert.equal(
                 (error as ApplicationError).code,
-                mediaCodes.mediaObjectNotFound
+                mediaCodes.duplicatedMediaID
             );
 
             return true;
@@ -127,7 +128,7 @@ test("decodeAPIResponse converts error responses into ApplicationError instances
             assert.equal(error instanceof ApplicationError, true);
             assert.equal(
                 (error as ApplicationError).code,
-                serverCodes.internalServerError
+                miscCodes.internalServerError
             );
 
             return true;
@@ -140,7 +141,7 @@ test("decodeAPIResponse converts error responses into ApplicationError instances
             assert.equal(error instanceof ApplicationError, true);
             assert.equal(
                 (error as ApplicationError).code,
-                serverCodes.unknownServerError
+                miscCodes.unknownServerError
             );
 
             return true;

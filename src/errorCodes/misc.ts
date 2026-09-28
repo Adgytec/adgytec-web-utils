@@ -1,5 +1,3 @@
-import type { ErrorNormalization } from "../errors";
-
 export const miscCodes = {
     malformedResponseBody: "malformed-response-body",
     malformedJsonFromServer: "malformed-json-from-server",
@@ -13,14 +11,11 @@ export const miscCodes = {
     zodError: "zod-error",
 } as const;
 
-export const miscOverrides = {
-    code: miscCodes.unexpectedError,
-    items: [
-        miscCodes.malformedJsonFromServer,
-        miscCodes.malformedResponseBody,
-        miscCodes.invalidResponseShape,
-        miscCodes.routeNotFound,
-        miscCodes.methodNotAllowed,
-        miscCodes.zodError,
-    ],
-} as const satisfies ErrorNormalization;
+export const miscOverrides = [
+    miscCodes.malformedJsonFromServer,
+    miscCodes.malformedResponseBody,
+    miscCodes.invalidResponseShape,
+    miscCodes.routeNotFound,
+    miscCodes.methodNotAllowed,
+    miscCodes.zodError,
+] as const;

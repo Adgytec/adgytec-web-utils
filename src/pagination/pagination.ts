@@ -33,7 +33,7 @@ export const PageSourceSchema = z.object({
     cursor: PageSourceCursorSchema.nullable(),
     order: z.string(),
     search: PageSearchSchema.nullable(),
-    limit: z.number().int(),
+    limit: z.int(),
     filters: z.record(z.string(), z.string()).nullable(),
 });
 

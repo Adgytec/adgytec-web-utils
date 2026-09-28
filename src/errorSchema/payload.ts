@@ -1,9 +1,9 @@
 import z from "zod";
-import { requestBodyCodes } from "../errorCodes";
+import { payloadCodes } from "../errorCodes";
 
 export const invalidRequestBodySchema = z
     .object({
-        code: z.literal(requestBodyCodes.invalidRequestBody),
+        code: z.literal(payloadCodes.invalidRequestBody),
         message: z.string(),
     })
     .transform(({ code, message }) => ({
@@ -13,7 +13,7 @@ export const invalidRequestBodySchema = z
 
 export const unknownFieldInRequestBodySchema = z
     .object({
-        code: z.literal(requestBodyCodes.unknownFieldInRequestBody),
+        code: z.literal(payloadCodes.unknownFieldInRequestBody),
         message: z.string(),
     })
     .transform(({ code, message }) => ({
@@ -22,13 +22,13 @@ export const unknownFieldInRequestBodySchema = z
     }));
 
 export const requestBodyTooLargeSchema = z.object({
-    code: z.literal(requestBodyCodes.requestBodyTooLarge),
+    code: z.literal(payloadCodes.requestBodyTooLarge),
     limit: z.int(),
 });
 
 export const emptyRequestBodySchema = z
     .object({
-        code: z.literal(requestBodyCodes.emptyRequestBody),
+        code: z.literal(payloadCodes.emptyRequestBody),
         message: z.string(),
     })
     .transform(({ code, message }) => ({

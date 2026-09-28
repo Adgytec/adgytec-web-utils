@@ -1,49 +1,25 @@
-import { type DefaultOverrideCode, defaultOverrides } from "../errorCodes";
+import { defaultOverrides, miscCodes } from "../errorCodes";
 import type {
     ErrorCode,
     ErrorDetails,
     ErrorDetailsNormalized,
-    NormalizedErrorCode,
 } from "../errorSchema";
 
-export type ErrorNormalization = {
-    code: ErrorCode;
-    items: readonly ErrorCode[];
-};
+const defaultOverridesSet: ReadonlySet<ErrorCode> = new Set(defaultOverrides);
 
-const buildOverrideMap = (
-    overrides: readonly ErrorNormalization[]
-): ReadonlyMap<DefaultOverrideCode, NormalizedErrorCode> => {
-    const map = new Map<DefaultOverrideCode, NormalizedErrorCode>();
-
-    for (const { code, items } of overrides) {
-        for (const item of items) {
-            if (!map.has(item as DefaultOverrideCode)) {
-                map.set(
-                    item as DefaultOverrideCode,
-                    code as NormalizedErrorCode
-                );
-            }
-        }
-    }
-
-    return map;
-};
-const defaultOverridesMap = buildOverrideMap(defaultOverrides);
-
-const isNormalizedCode = (code: ErrorCode): code is DefaultOverrideCode => {
-    return defaultOverridesMap.has(code as DefaultOverrideCode);
+const isDefaultOverrideCode = (code: ErrorCode): boolean => {
+    return defaultOverridesSet.has(code);
 };
 
 // Normalizes an error object to ensure a consistent `code` for downstream usage.
 export const normalizeError = (
     parsedResponse: ErrorDetails
 ): ErrorDetailsNormalized => {
-    if (isNormalizedCode(parsedResponse.code)) {
-        const normalizedCode = defaultOverridesMap.get(parsedResponse.code);
+    if (isDefaultOverrideCode(parsedResponse.code)) {
         return {
-            code: normalizedCode,
-        } as ErrorDetailsNormalized;
+            code: miscCodes.unexpectedError,
+            debugMessage: JSON.stringify(parsedResponse),
+        };
     }
 
     return parsedResponse as ErrorDetailsNormalized;

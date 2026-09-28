@@ -1,3 +1,3 @@
 export const constraintsCodes = {
-    limitExceededCode: "limit-reached",
+    limitReached: "limit-reached",
 } as const;

@@ -1,127 +1,76 @@
 import z from "zod";
-import type { DefaultOverrideCode } from "../errorCodes";
-import {
-    authErrorSchema,
-    hashMismatchSchema,
-    invalidApiKeySchema,
-    invalidAuthHeaderValueSchema,
-    invalidJWTSchema,
-    invalidSessionSchema,
-    invalidSignedUrlSchema,
-    jwtNotAcceptableSchema,
-    organizationStatusBadSchema,
-    tokenExpiredSchema,
-    tokenNotFoundSchema,
-    unsupportedAuthSchemeSchema,
-    userDisabledSchema,
-    userNotExistInOrganizationSchema,
-    userNotExistsInOrganizationManagementSchema,
-    userNotFoundSchema,
-} from "./auth";
-import {
-    invalidIDSchema,
-    methodNotAllowedSchema,
-    networkErrorSchema,
-    routeNotFoundSchema,
-    unexpectedErrorSchema,
-    zodErrorSchema,
-} from "./common";
+import type { DefaultOverridesCode } from "../errorCodes";
+import { invalidJWTSchema, invalidSignedUrlSchema } from "./auth";
+import { limitReachedSchema } from "./constraints";
 import { formValidationFailedSchema } from "./form";
+import { duplicateMediaIDSchema, mediaTooLargeSchema } from "./media";
 import {
-    authorizationErrorSchema,
-    invalidActorSchema,
-    missingPermissionSchema,
-    permissionExplicitlyDeniedSchema,
-    selfPermissionMismatchSchema,
-} from "./iam";
-import {
-    completeMultipartUploadCalledTooSoonSchema,
-    invalidMultipartNumberSchema,
-    mediaItemsLimitExceededSchema,
-    mediaObjectNotFoundSchema,
-    mediaTooLargeSchema,
-    mediaUploadErrorSchema,
-    missingETagValueSchema,
-    multipartPartUploadFailedSchema,
-    singlepartUploadFailedSchema,
-    unsupportedObjectUploadedSchema,
-    uploadAlreadyCompletedSchema,
-} from "./media";
-import { invalidCursorValueSchema } from "./pagination";
-import {
-    emptyRequestBodySchema,
-    invalidRequestBodySchema,
-    requestBodyTooLargeSchema,
-    unknownFieldInRequestBodySchema,
-} from "./reqBody";
-import { limitExceededSchema } from "./restrictions";
+    actorForbiddenSchema,
+    actorNotInWorkspace,
+    invalidAuthHeaderSchema,
+    moduleNotInWorkspaceSchema,
+    unsupportedAuthSchemeSchema,
+    workspaceForbiddenSchema,
+} from "./middleware";
 import {
     internalServerErrorSchema,
     invalidResponseShapeSchema,
     malformedJSONFromServerSchema,
     malformedResponseBodySchema,
-    unknownServerErrorSchema,
-} from "./server";
-
-export const errorSchema = z.discriminatedUnion("code", [
-    authErrorSchema,
-    invalidApiKeySchema,
-    userNotFoundSchema,
-    jwtNotAcceptableSchema,
-    invalidSignedUrlSchema,
-    hashMismatchSchema,
-    invalidAuthHeaderValueSchema,
-    organizationStatusBadSchema,
-    userNotExistsInOrganizationManagementSchema,
-    userNotExistInOrganizationSchema,
-    userDisabledSchema,
-    tokenNotFoundSchema,
-    unsupportedAuthSchemeSchema,
-    invalidSessionSchema,
-    invalidJWTSchema,
-    tokenExpiredSchema,
-
-    invalidIDSchema,
-    routeNotFoundSchema,
     methodNotAllowedSchema,
     networkErrorSchema,
+    routeNotFoundSchema,
     unexpectedErrorSchema,
+    unknownServerErrorSchema,
     zodErrorSchema,
+} from "./misc";
+import {
+    emptyRequestBodySchema,
+    invalidRequestBodySchema,
+    requestBodyTooLargeSchema,
+    unknownFieldInRequestBodySchema,
+} from "./payload";
+import { permissionDeniedSchema, workspaceNotFoundSchema } from "./permissions";
+import { invalidIDSchema } from "./reqParams";
+
+export const errorSchema = z.discriminatedUnion("code", [
+    invalidSignedUrlSchema,
+    invalidJWTSchema,
+
+    invalidIDSchema,
 
     formValidationFailedSchema,
 
-    authorizationErrorSchema,
-    selfPermissionMismatchSchema,
-    invalidActorSchema,
-    permissionExplicitlyDeniedSchema,
-    missingPermissionSchema,
+    permissionDeniedSchema,
+    workspaceNotFoundSchema,
 
-    limitExceededSchema,
+    limitReachedSchema,
 
-    mediaUploadErrorSchema,
-    invalidMultipartNumberSchema,
-    mediaObjectNotFoundSchema,
     mediaTooLargeSchema,
-    mediaItemsLimitExceededSchema,
-    uploadAlreadyCompletedSchema,
-    unsupportedObjectUploadedSchema,
-    completeMultipartUploadCalledTooSoonSchema,
-    singlepartUploadFailedSchema,
-    multipartPartUploadFailedSchema,
-    missingETagValueSchema,
+    duplicateMediaIDSchema,
 
-    invalidCursorValueSchema,
+    workspaceForbiddenSchema,
+    actorForbiddenSchema,
+    actorNotInWorkspace,
+    unsupportedAuthSchemeSchema,
+    invalidAuthHeaderSchema,
+    moduleNotInWorkspaceSchema,
 
-    invalidRequestBodySchema,
-    unknownFieldInRequestBodySchema,
-    requestBodyTooLargeSchema,
-    emptyRequestBodySchema,
-
+    routeNotFoundSchema,
+    methodNotAllowedSchema,
+    networkErrorSchema,
+    unexpectedErrorSchema,
+    zodErrorSchema,
     malformedResponseBodySchema,
     malformedJSONFromServerSchema,
     invalidResponseShapeSchema,
     unknownServerErrorSchema,
     internalServerErrorSchema,
+
+    invalidRequestBodySchema,
+    unknownFieldInRequestBodySchema,
+    requestBodyTooLargeSchema,
+    emptyRequestBodySchema,
 ]);
 
 export type ErrorCode = z.infer<typeof errorSchema>["code"];
@@ -130,7 +79,6 @@ export type ErrorDetails = z.infer<typeof errorSchema>;
 export type ErrorDetailsNormalized = Exclude<
     ErrorDetails,
     {
-        code: DefaultOverrideCode;
+        code: DefaultOverridesCode;
     }
 >;
-export type NormalizedErrorCode = ErrorDetailsNormalized["code"];

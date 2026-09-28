@@ -1,6 +1,3 @@
-import type { ErrorNormalization } from "../errors";
-import { miscCodes } from "./misc";
-
 export const middlewareCodes = {
     workspaceForbidden: "workspace-forbidden",
     actorForbidden: "actor-forbidden",
@@ -10,10 +7,7 @@ export const middlewareCodes = {
     moduleNotInWorkspace: "module-not-in-workspace",
 } as const;
 
-export const middlewareOverrides = {
-    code: miscCodes.unexpectedError,
-    items: [
-        middlewareCodes.unsupportedAuthScheme,
-        middlewareCodes.invalidAuthHeader,
-    ],
-} as const satisfies ErrorNormalization;
+export const middlewareOverrides = [
+    middlewareCodes.unsupportedAuthScheme,
+    middlewareCodes.invalidAuthHeader,
+] as const;

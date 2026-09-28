@@ -123,8 +123,8 @@ export const PageItemWithCursorSchema = <T extends z.ZodType>(itemSchema: T) =>
   });
 
 export type PageItemWithCursor<T extends z.ZodType> = {
-  readonly cursor: string;
-  readonly item: z.output<T>;
+  cursor: string;
+  item: z.output<T>;
 };
 ```
 
@@ -147,15 +147,15 @@ export const PageSchema = <T extends z.ZodType>(itemSchema: T) =>
   });
 
 export type Page<T extends z.ZodType> = {
-  readonly pageInfo: PageInfo;
-  readonly page: readonly PageItemWithCursor<T>[];
+  pageInfo: PageInfo;
+  page: PageItemWithCursor<T>[];
 };
 ```
 
 #### Fields
 
 - `pageInfo` (`PageInfo`): Page navigation metadata and the source query state.
-- `page` (`readonly PageItemWithCursor<T>[]`): An array of cursor-wrapped items.
+- `page` (`PageItemWithCursor<T>[]`): An array of cursor-wrapped items.
 
 ---
 

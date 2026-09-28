@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { z } from "zod";
-import { serverCodes } from "../src/errorCodes";
+import { miscCodes } from "../src/errorCodes";
 import { ApplicationError } from "../src/errors";
 import {
     type Page,
@@ -262,7 +262,7 @@ test("PageSchema integrates with decodeAPIResponse for native fetch responses", 
             assert.equal(err instanceof ApplicationError, true);
             assert.equal(
                 (err as ApplicationError).code,
-                serverCodes.invalidResponseShape
+                miscCodes.invalidResponseShape
             );
             return true;
         }

@@ -1,5 +1,5 @@
 import type z from "zod";
-import { serverCodes } from "../errorCodes";
+import { miscCodes } from "../errorCodes";
 import { ApplicationError } from "../errors";
 
 export function parseSuccessReponse<T>(
@@ -7,7 +7,7 @@ export function parseSuccessReponse<T>(
     schema: z.ZodSchema<T>
 ): T {
     if (!payload) {
-        throw new ApplicationError(serverCodes.invalidResponseShape, {
+        throw new ApplicationError(miscCodes.invalidResponseShape, {
             message: "Expected response body but received empty response",
             payload: payload,
         });
@@ -16,7 +16,7 @@ export function parseSuccessReponse<T>(
     const parsed = schema.safeParse(payload);
     if (parsed.success) return parsed.data;
 
-    throw new ApplicationError(serverCodes.invalidResponseShape, {
+    throw new ApplicationError(miscCodes.invalidResponseShape, {
         message: parsed.error.message,
         payload: payload,
     });

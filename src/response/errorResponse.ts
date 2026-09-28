@@ -1,5 +1,5 @@
 import z from "zod";
-import { serverCodes } from "../errorCodes";
+import { miscCodes } from "../errorCodes";
 import { ApplicationError } from "../errors";
 
 const serverErrorSchema = z
@@ -15,10 +15,10 @@ export function parseErrorResponse(status: number, payload: unknown): never {
     }
 
     if (status >= 500) {
-        throw new ApplicationError(serverCodes.internalServerError);
+        throw new ApplicationError(miscCodes.internalServerError);
     }
 
-    throw new ApplicationError(serverCodes.unknownServerError, {
+    throw new ApplicationError(miscCodes.unknownServerError, {
         payload,
     });
 }

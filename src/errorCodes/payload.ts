@@ -1,19 +1,19 @@
 import type { ErrorNormalization } from "../errors";
-import { commonCodes } from "./common";
+import { miscCodes } from "./misc";
 
-export const requestBodyCodes = {
+export const payloadCodes = {
     invalidRequestBody: "invalid-request-body",
     unknownFieldInRequestBody: "unknown-field-in-request-body",
     emptyRequestBody: "empty-request-body",
     requestBodyTooLarge: "request-body-too-large",
 } as const;
 
-export const reqBodyOverrides = {
-    code: commonCodes.unexpectedError,
+export const payloadOverrides = {
+    code: miscCodes.unexpectedError,
     items: [
-        requestBodyCodes.invalidRequestBody,
-        requestBodyCodes.unknownFieldInRequestBody,
-        requestBodyCodes.emptyRequestBody,
-        requestBodyCodes.requestBodyTooLarge,
+        payloadCodes.invalidRequestBody,
+        payloadCodes.unknownFieldInRequestBody,
+        payloadCodes.emptyRequestBody,
+        payloadCodes.requestBodyTooLarge,
     ],
 } as const satisfies ErrorNormalization;

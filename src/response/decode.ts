@@ -1,6 +1,6 @@
 import type z from "zod";
 import { httpReqHeaders } from "../constants";
-import { serverCodes } from "../errorCodes";
+import { miscCodes } from "../errorCodes";
 import { ApplicationError } from "../errors";
 import { parseErrorResponse } from "./errorResponse";
 import { parseSuccessReponse } from "./successReponse";
@@ -27,7 +27,7 @@ export async function decodeAPIResponse<T>(
     try {
         raw = await res.text();
     } catch {
-        throw new ApplicationError(serverCodes.malformedResponseBody, {
+        throw new ApplicationError(miscCodes.malformedResponseBody, {
             response: res,
         });
     }
@@ -40,7 +40,7 @@ export async function decodeAPIResponse<T>(
                 httpReqHeaders.contentType.valueApplicationJSON
             )
         ) {
-            throw new ApplicationError(serverCodes.invalidResponseShape, {
+            throw new ApplicationError(miscCodes.invalidResponseShape, {
                 response: res,
             });
         }
@@ -48,7 +48,7 @@ export async function decodeAPIResponse<T>(
         try {
             payload = JSON.parse(raw);
         } catch {
-            throw new ApplicationError(serverCodes.malformedJsonFromServer, {
+            throw new ApplicationError(miscCodes.malformedJsonFromServer, {
                 response: res,
             });
         }

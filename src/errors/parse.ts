@@ -1,13 +1,13 @@
 import isNetworkError from "is-network-error";
 import z from "zod";
-import { commonCodes } from "../errorCodes";
+import { miscCodes } from "../errorCodes";
 import type { ErrorDetails } from "../errorSchema";
 import { ApplicationError } from "./applicationError";
 
 export function parseError(err: unknown): ErrorDetails {
     if (isNetworkError(err)) {
         return {
-            code: commonCodes.networkError,
+            code: miscCodes.networkError,
             debugMessage: err.toString(),
         };
     }
@@ -16,7 +16,7 @@ export function parseError(err: unknown): ErrorDetails {
         const errVal = err.parse();
         if (errVal instanceof z.ZodError) {
             return {
-                code: commonCodes.zodError,
+                code: miscCodes.zodError,
                 error: errVal,
             };
         }
@@ -24,7 +24,7 @@ export function parseError(err: unknown): ErrorDetails {
     }
 
     return {
-        code: commonCodes.unexpectedError,
+        code: miscCodes.unexpectedError,
         debugMessage: err instanceof Error ? err.toString() : String(err),
     };
 }

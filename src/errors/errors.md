@@ -25,7 +25,7 @@ class MyCustomUtilityError extends BaseError {
 
 ## `ApplicationError`
 
-A structured application error class that matches the server-side API error payload design. Extends `BaseError`.
+A structured application error class matching the server-side API error payload design. Extends `BaseError`.
 
 ### Constructor Signature
 
@@ -48,18 +48,18 @@ import { ApplicationError, mediaCodes } from "adgytec-web-utils";
 // 1. Constructing and throwing
 throw new ApplicationError(mediaCodes.mediaTooLarge, {
   mediaID: "avatar.png",
-  currentSize: 2048576,
+  size: 2048576,
   maxSupportedSize: 1048576,
 });
 
 // 2. Catching and accessing fields
 try {
-  // run upload code...
+  // run API or upload code...
 } catch (err) {
   if (err instanceof ApplicationError) {
     console.log("Error Code:", err.code); // "media-too-large"
     console.log("Details Payload:", err.details); // { code: "media-too-large", mediaID: "avatar.png", ... }
-    
+
     // Validate schema compliance
     const result = err.parse();
     if (!(result instanceof Error)) {
@@ -84,7 +84,7 @@ Converts an unknown caught value (e.g., in a `catch (err)` block) into a structu
 2. **Structured Application Errors**: If `err` is an instance of `ApplicationError`:
    - It runs `err.parse()`.
    - If the parse succeeds, it returns the parsed `ErrorDetails`.
-   - If the parse fails (meaning the details payload does not match the schema), it wraps the failure and returns:
+   - If the parse fails (meaning the details payload does not match any schema), it wraps the failure and returns:
      ```ts
      { code: "zod-error", error: ZodError }
      ```
@@ -102,9 +102,8 @@ async function executeAction() {
   try {
     await sendRequest();
   } catch (err) {
-    // Safely parse any thrown value
     const errorDetails = parseError(err);
-    
+
     if (errorDetails.code === "network-error") {
       showOfflineWarning();
     } else {
@@ -118,17 +117,16 @@ async function executeAction() {
 
 ## `normalizeError(parsedResponse)`
 
-Collapses highly detailed, domain-specific child error codes into stable, higher-level parent codes (defined in `defaultOverrides`).
+Collapses implementation-specific override error codes (defined in `defaultOverrides`) into a stable, generic `unexpected-error` shape:
 
-This utility is extremely helpful when writing generic UI error message mappers or server log filters that do not need to branch on dozens of specific sub-error types.
+```ts
+{
+  code: "unexpected-error",
+  debugMessage: JSON.stringify(parsedResponse),
+}
+```
 
-### Example Mappings
-
-- `missing-etag-value` normalizes to `media-upload-error`.
-- `invalid-multipart-upload-part-number` normalizes to `media-upload-error`.
-- `invalid-api-key` normalizes to `auth-error`.
-- `jwt-not-acceptable` normalizes to `auth-error`.
-- `invalid-id` normalizes to `unexpected-error`.
+If the error code is not in `defaultOverrides`, the error details payload is returned as-is.
 
 ### Example Usage
 
@@ -136,31 +134,12 @@ This utility is extremely helpful when writing generic UI error message mappers 
 import { parseError, normalizeError } from "adgytec-web-utils";
 
 try {
-  await uploadFileSequence();
+  await performRequest();
 } catch (err) {
   const parsed = parseError(err);
-  
-  // Collapse specific codes
+
+  // Normalize override codes to unexpected-error
   const normalized = normalizeError(parsed);
-  console.log("Collapsed code:", normalized.code);
-  
-  if (normalized.code === "media-upload-error") {
-    // Triggers for singlepart failures, missing ETags, invalid part numbers, etc.
-    showUploadTroubleshooterModal();
-  }
+  console.log("Normalized code:", normalized.code);
 }
 ```
-
----
-
-## `ErrorNormalization`
-
-TypeScript type definition used to define mapping groups for the default overrides list.
-
-```ts
-type ErrorNormalization = {
-  code: ErrorCode;
-  items: readonly ErrorCode[];
-};
-```
-

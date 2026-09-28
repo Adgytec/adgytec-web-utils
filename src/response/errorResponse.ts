@@ -8,6 +8,13 @@ const serverErrorSchema = z
     })
     .loose();
 
+/**
+ * Parses an HTTP error response status and payload into an appropriate `ApplicationError`.
+ *
+ * @param status - The HTTP response status code.
+ * @param payload - The decoded JSON payload or raw response content.
+ * @throws ApplicationError always.
+ */
 export function parseErrorResponse(status: number, payload: unknown): never {
     const result = serverErrorSchema.safeParse(payload);
     if (result.success) {

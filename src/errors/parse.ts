@@ -4,6 +4,16 @@ import { miscCodes } from "../errorCodes";
 import type { ErrorDetails } from "../errorSchema";
 import { ApplicationError } from "./applicationError";
 
+/**
+ * Parses an arbitrary runtime error into a structured, schema-compliant `ErrorDetails` payload.
+ *
+ * - Network errors are mapped to `network-error`.
+ * - `ApplicationError` instances are parsed via their schema; if invalid, they are mapped to `zod-error`.
+ * - All other errors are mapped to `unexpected-error`.
+ *
+ * @param err - The caught exception or unknown error value.
+ * @returns Structured `ErrorDetails` object conforming to `errorSchema`.
+ */
 export function parseError(err: unknown): ErrorDetails {
     if (isNetworkError(err)) {
         return {

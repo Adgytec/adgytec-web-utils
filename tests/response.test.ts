@@ -103,7 +103,7 @@ test("decodeAPIResponse converts error responses into ApplicationError instances
                 new Response(
                     JSON.stringify({
                         code: mediaCodes.duplicatedMediaID,
-                        MediaID: "some-media-id",
+                        mediaID: "some-media-id",
                     }),
                     {
                         status: 409,

@@ -2,6 +2,14 @@ import type z from "zod";
 import { miscCodes } from "../errorCodes";
 import { ApplicationError } from "../errors";
 
+/**
+ * Validates a successful API response payload against a Zod schema.
+ *
+ * @param payload - The decoded response body payload.
+ * @param schema - The Zod schema against which payload is validated.
+ * @returns The successfully parsed and typed data.
+ * @throws ApplicationError with `invalid-response-shape` if payload is empty or invalid.
+ */
 export function parseSuccessReponse<T>(
     payload: unknown,
     schema: z.ZodSchema<T>

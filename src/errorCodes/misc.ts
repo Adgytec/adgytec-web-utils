@@ -1,3 +1,6 @@
+/**
+ * Miscellaneous and generic server/client runtime error codes.
+ */
 export const miscCodes = {
     malformedResponseBody: "malformed-response-body",
     malformedJsonFromServer: "malformed-json-from-server",
@@ -11,6 +14,9 @@ export const miscCodes = {
     zodError: "zod-error",
 } as const;
 
+/**
+ * Miscellaneous error codes subject to default normalization into `unexpected-error`.
+ */
 export const miscOverrides = [
     miscCodes.malformedJsonFromServer,
     miscCodes.malformedResponseBody,

@@ -1,6 +1,9 @@
 import z from "zod";
 import { fieldValidationCodes } from "../errorCodes";
 
+/**
+ * Map of individual form field validation error schemas indexed by validation constraint name.
+ */
 export const fieldValidationErrorSchemas = {
     unknown: z.object({
         code: z.literal(fieldValidationCodes.unknown),
@@ -427,9 +430,15 @@ function valuesAsTuple<T extends Record<string, unknown>>(obj: T) {
     return Object.values(obj) as [T[keyof T], ...T[keyof T][]];
 }
 
+/**
+ * Discriminated union schema validating any individual form field validation error.
+ */
 export const formFieldDiscriminatedUnionSchema = z.discriminatedUnion(
     "code",
     valuesAsTuple(fieldValidationErrorSchemas)
 );
 
+/**
+ * Inferred type representing an individual form field error.
+ */
 export type FormFieldError = z.infer<typeof formFieldDiscriminatedUnionSchema>;

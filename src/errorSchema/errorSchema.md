@@ -2,292 +2,160 @@
 
 Exports from `src/errorSchema`.
 
-All schema exports are Zod schemas. They can be used to validate API error payloads, infer TypeScript types, compose additional validation schemas, or drive client-side UI error states.
+All schema exports are Zod schemas. They validate API error payloads, infer TypeScript types, compose validation pipelines, and drive UI error state handling.
 
 ---
 
 ## The Client-Side Error Parsing Pipeline
 
-When consuming a JSON response from an API, use the root `errorSchema` to validate the error format and narrow it down to the exact error shape.
-
-### Complete Pipeline Example
+When consuming responses from an API, use `parseError` to safely extract structured `ErrorDetails`, or use `errorSchema` directly to validate error payloads.
 
 ```ts
 import { errorSchema, parseError, normalizeError } from "adgytec-web-utils";
 
-async function makeAPICall() {
+async function handleAction() {
   try {
-    const response = await fetch("/api/data");
+    const response = await fetch("/api/endpoint");
     if (!response.ok) {
       const payload = await response.json();
       
-      // 1. Validate the response against the schema
+      // 1. Validate payload against errorSchema
       const parsed = errorSchema.safeParse(payload);
       if (!parsed.success) {
-        console.error("Unknown error format received:", parsed.error);
+        console.error("Unrecognized error shape:", parsed.error);
         return;
       }
-      
+
       const errorDetails = parsed.data; // Type-safe union of all supported errors
-      
-      // 2. Handle specific error codes
+
+      // 2. Branch on specific error code
       switch (errorDetails.code) {
         case "validation-failed":
-          // Form-level validation error
-          highlightFormErrors(errorDetails.details);
+          console.error("Form errors:", errorDetails.details);
           break;
-          
+
         case "media-too-large":
-          // Media specific error
-          alert(`File ${errorDetails.mediaID} is too large (${errorDetails.currentSize} bytes). Max limit is ${errorDetails.maxSupportedSize} bytes.`);
+          console.error(`File ${errorDetails.mediaID} is too large (${errorDetails.size} bytes). Max limit: ${errorDetails.maxSupportedSize}`);
           break;
-          
-        case "bad-org-status":
-          showAccountSuspendedScreen();
+
+        case "workspace-forbidden":
+          console.error("Access denied to workspace:", errorDetails.workspaceID);
           break;
-          
+
         default:
-          // 3. Fallback to normalized error for generic handling
+          // 3. Fallback to normalized error handling
           const normalized = normalizeError(errorDetails);
           console.warn(`Normalized code: ${normalized.code}`);
-          showGenericNotification("An error occurred. Please try again.");
           break;
       }
     }
   } catch (err) {
-    // Connection or parser failure
     const errorDetails = parseError(err);
-    console.error(`Parsed network/runtime error code: ${errorDetails.code}`);
+    console.error(`Parsed error code: ${errorDetails.code}`);
   }
 }
 ```
-
----
-
-## Auth Schemas
-
-Schemas validating authentication, API key, and JWT token signatures.
-
-| Export Schema | Validates Code | Additional Fields |
-| --- | --- | --- |
-| `authErrorSchema` | `"auth-error"` | None |
-| `invalidApiKeySchema` | `"invalid-api-key"` | None |
-| `userNotFoundSchema` | `"user-not-found"` | None |
-| `jwtNotAcceptableSchema` | `"jwt-not-acceptable"` | None |
-| `invalidSignedUrlSchema` | `"invalid-signed-url"` | None |
-| `hashMismatchSchema` | `"hash-mismatch"` | None |
-| `invalidAuthHeaderValueSchema` | `"invalid-auth-header-value"` | None |
-| `unsupportedAuthSchemeSchema` | `"unsupported-auth-scheme"` | None |
-| `organizationStatusBadSchema` | `"bad-org-status"` | None |
-| `userNotExistsInOrganizationManagementSchema` | `"user-not-exists-in-organization-management"` | None |
-| `userNotExistInOrganizationSchema` | `"user-not-exists-in-organization"` | None |
-| `userDisabledSchema` | `"user-disabled"` | None |
-| `tokenNotFoundSchema` | `"token-not-found"` | None |
-| `invalidJWTSchema` | `"invalid-jwt"` | None |
-| `invalidSessionSchema` | `"invalid-session"` | None |
-| `tokenExpiredSchema` | `"token-expired"` | None |
-
----
-
-## Common Schemas
-
-Generic failure schemas applicable to any resource request.
-
-| Export Schema | Validates Code | Additional Fields |
-| --- | --- | --- |
-| `invalidIDSchema` | `"invalid-id"` | None |
-| `routeNotFoundSchema` | `"route-not-found"` | None |
-| `methodNotAllowedSchema` | `"method-not-allowed"` | None |
-| `networkErrorSchema` | `"network-error"` | `debugMessage?: string` |
-| `unexpectedErrorSchema` | `"unexpected-error"` | `debugMessage?: string` |
-| `zodErrorSchema` | `"zod-error"` | `error: z.ZodError` |
-
----
-
-## Form Validation Schema & Field Trees
-
-Form validation errors are structured recursively. A form can have nested field errors representing sub-objects in the form payload.
-
-### Definitions
-
-- **`FieldNode`**: A union type representing either a leaf field containing validation errors or a branch containing child nodes.
-  ```ts
-  export type FieldNode =
-    | { key: string; errors: FormFieldError[] }
-    | { key: string; children: FieldNode[] };
-  ```
-- **`formValidationFailedSchema`**: Top-level validator.
-  - Inferred type: **`FormValidationFailed`**
-  ```ts
-  export const formValidationFailedSchema = z.object({
-    code: z.literal("validation-failed"),
-    details: z.array(fieldNodeSchema),
-  });
-  ```
-
-### Nested Validation Example
-
-```ts
-import { formValidationFailedSchema } from "adgytec-web-utils";
-
-const responsePayload = {
-  code: "validation-failed",
-  details: [
-    {
-      key: "user",
-      children: [
-        {
-          key: "email",
-          errors: [
-            { code: "validation_is_email", debugMessage: "Invalid email address" }
-          ]
-        },
-        {
-          key: "profile",
-          children: [
-            {
-              key: "age",
-              errors: [
-                { code: "validation_min_greater_equal_than_required", debugMessage: "Must be 18 or older", threshold: 18 }
-              ]
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
-const result = formValidationFailedSchema.safeParse(responsePayload);
-if (result.success) {
-  // Safe to navigate result.data.details
-  console.log("Validated form errors:", result.data.details);
-}
-```
-
----
-
-## Form Field Schemas and Types
-
-`formFieldDiscriminatedUnionSchema` (inferred as type `FormFieldError`) validates individual field validation failures using a `"code"` discriminator.
-
-All errors contain:
-- `code`: The field validation error code (from `fieldValidationCodes`).
-- `debugMessage`: A developer-friendly error message.
-
-Certain codes include additional validation metadata fields:
-
-| Code Value (`code`) | Additional Fields | Description |
-| --- | --- | --- |
-| `"validation_date_too_early"` | `min: Date`, `debugMin: string` | Date is earlier than minimum. |
-| `"validation_date_too_late"` | `max: Date`, `debugMax: string` | Date is later than maximum. |
-| `"validation_date_out_of_range"` | `min: Date`, `max: Date`, `debugMin: string`, `debugMax: string` | Date is out of the specified range. |
-| `"validation_length_too_long"` | `max: number` | Value exceeds maximum length. |
-| `"validation_length_too_short"` | `min: number` | Value is below minimum length. |
-| `"validation_length_invalid"` | `min: number` | Value length does not match exact constraints. |
-| `"validation_length_out_of_range"` | `min: number`, `max: number` | Value length is outside constraints. |
-| `"validation_min_greater_equal_than_required"` | `threshold: Date \| number` | Value must be greater than or equal to threshold. |
-| `"validation_max_less_equal_than_required"` | `threshold: Date \| number` | Value must be less than or equal to threshold. |
-| `"validation_min_greater_than_required"` | `threshold: Date \| number` | Value must be strictly greater than threshold. |
-| `"validation_max_less_than_required"` | `threshold: Date \| number` | Value must be strictly less than threshold. |
-| `"validation_in_invalid"` | `valid: unknown[]` | Value must be one of the specified allowed values. |
-| `"validation_multiple_of_invalid"` | `base: number` | Value must be a multiple of base. |
-| `"validation_not_in_invalid"` | `valid: unknown[]` | Value must not be one of the specified values. |
-
-All other codes (e.g. format checks like `"validation_is_email"`, `"validation_is_uuid"`, etc.) contain only `code` and `debugMessage`.
-
-### Example Usage
-
-```ts
-import { formFieldDiscriminatedUnionSchema } from "adgytec-web-utils";
-
-const singleFieldError = {
-  code: "validation_length_too_long",
-  debugMessage: "Length exceeds maximum of 10 characters",
-  max: 10,
-};
-
-const parsed = formFieldDiscriminatedUnionSchema.safeParse(singleFieldError);
-if (parsed.success) {
-  console.log("Field size exceeded maximum limit of:", parsed.data.max);
-}
-```
-
----
-
-## IAM Schemas
-
-Schemas validating identity and access management rule violations.
-
-| Export Schema | Validates Code | Additional Fields |
-| --- | --- | --- |
-| `authorizationErrorSchema` | `"authorization-error"` | None |
-| `selfPermissionMismatchSchema` | `"self-permission-mismatch"` | None |
-| `invalidActorSchema` | `"invalid-actor"` | None |
-| `permissionExplicitlyDeniedSchema` | `"permission-explicitly-denied"` | None |
-| `missingPermissionSchema` | `"missing-permission"` | None |
-
----
-
-## Media Upload Schemas
-
-Schemas for client/server upload operations.
-
-| Export Schema | Validates Code | Additional Fields |
-| --- | --- | --- |
-| `mediaUploadErrorSchema` | `"media-upload-error"` | None |
-| `invalidMultipartNumberSchema` | `"invalid-multipart-upload-part-number"` | None |
-| `mediaObjectNotFoundSchema` | `"object-not-found"` | None |
-| `mediaTooLargeSchema` | `"media-too-large"` | `mediaID: string`, `currentSize: number`, `maxSupportedSize: number` |
-| `mediaItemsLimitExceededSchema` | `"media-items-limit-exceeded"` | `currentLength: number`, `maxItemsSupported: number` |
-| `uploadAlreadyCompletedSchema` | `"upload-already-completed"` | None |
-| `unsupportedObjectUploadedSchema` | `"unsupported-object-uploaded"` | None |
-| `completeMultipartUploadCalledTooSoonSchema`| `"complete-multipart-upload-called-too-soon"`| None |
-| `singlepartUploadFailedSchema` | `"singlepart-upload-failed"`| `mediaID: string` |
-| `multipartPartUploadFailedSchema` | `"multipart-part-upload-failed"`| `mediaID: string`, `partNumber: number` |
-| `missingETagValueSchema` | `"missing-etag-value"` | `mediaID: string`, `partNumber: number` |
 
 ---
 
 ## Root Error Schema and Type Utilities
 
-- **`errorSchema`**: A Zod discriminated union of all error schemas listed above.
+- **`errorSchema`**: A Zod discriminated union of all supported error schemas.
 - **`ErrorCode`**: TypeScript union of all error code strings.
 - **`ErrorDetails`**: TypeScript union of all validated error payload shapes.
-- **`ErrorDetailsNormalized`**: Error shapes after overrides (child codes) are removed.
-- **`NormalizedErrorCode`**: Code union for normalized error shapes.
+- **`ErrorDetailsNormalized`**: Error shapes after default overrides are mapped to `unexpected-error`.
 
 ---
 
-## Error Factory Functions
+## Error Schemas by Domain
 
-Use these helper functions to quickly construct and throw validation-compliant `ApplicationError` objects.
+### Authentication Schemas
 
-### `newMediaItemsLimitExceedError(currentLength, maxItemsSupported)`
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `invalidSignedUrlSchema` | `"invalid-signed-url"` | None |
+| `invalidJWTSchema` | `"invalid-jwt"` | None |
 
-Throws an `ApplicationError` representing `media-items-limit-exceeded`.
+---
 
-```ts
-import { newMediaItemsLimitExceedError, MediaItemsLimit } from "adgytec-web-utils";
+### Constraints Schemas
 
-function validateSelection(files: File[]) {
-  if (files.length > MediaItemsLimit) {
-    newMediaItemsLimitExceedError(files.length, MediaItemsLimit);
-  }
-}
-```
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `limitReachedSchema` | `"limit-reached"` | `constraintKey: string`, `constraintCode: string`, `limit: number`, `currentValue: number` |
 
-### `newMediaTooLargeError(fileName, currentSize, maxSupportedSize)`
+---
 
-Throws an `ApplicationError` representing `media-too-large`.
+### Form Schemas
 
-```ts
-import { newMediaTooLargeError, MediaUploadLimit } from "adgytec-web-utils";
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `formValidationFailedSchema` | `"validation-failed"` | `details: FieldNode[]` |
+| `formFieldDiscriminatedUnionSchema` | Individual `validation_*` codes | Constraint-specific fields (e.g., `min`, `max`, `debugMessage`) |
 
-function validateFileSize(file: File) {
-  if (file.size > MediaUploadLimit) {
-    newMediaTooLargeError(file.name, file.size, MediaUploadLimit);
-  }
-}
-```
+---
 
+### Media Schemas
+
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `mediaTooLargeSchema` | `"media-too-large"` | `mediaID: string`, `size: number`, `maxSupportedSize: number` |
+| `duplicateMediaIDSchema` | `"duplicate-media-id"` | `mediaID: string` |
+
+---
+
+### Middleware Schemas
+
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `workspaceForbiddenSchema` | `"workspace-forbidden"` | `workspaceID: string` |
+| `actorForbiddenSchema` | `"actor-forbidden"` | `currentActor: string`, `requiredActor: string` |
+| `actorNotInWorkspaceSchema` | `"actor-not-in-workspace"` | `workspaceID: string` |
+| `unsupportedAuthSchemeSchema` | `"unsupported-auth-scheme"` | `currentScheme: string`, `supportedSchemes?: string[] \| null` |
+| `invalidAuthHeaderSchema` | `"invalid-auth-header"` | None |
+| `moduleNotInWorkspaceSchema` | `"module-not-in-workspace"` | `workspaceID: string`, `module: string` |
+
+---
+
+### Miscellaneous & Runtime Schemas
+
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `routeNotFoundSchema` | `"route-not-found"` | None |
+| `methodNotAllowedSchema` | `"method-not-allowed"` | None |
+| `networkErrorSchema` | `"network-error"` | `debugMessage: string` |
+| `unexpectedErrorSchema` | `"unexpected-error"` | `debugMessage: string` |
+| `zodErrorSchema` | `"zod-error"` | `error: ZodError` |
+| `malformedResponseBodySchema` | `"malformed-response-body"` | `response: Response` |
+| `malformedJSONFromServerSchema` | `"malformed-json-from-server"` | `response: Response` |
+| `invalidResponseShapeSchema` | `"invalid-response-shape"` | `debugMessage: string`, `payload: unknown` |
+| `unknownServerErrorSchema` | `"unknown-server-error"` | `payload: unknown` |
+| `internalServerErrorSchema` | `"internal-server-error"` | None |
+
+---
+
+### Payload Schemas
+
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `invalidRequestBodySchema` | `"invalid-request-body"` | `debugMessage: string` |
+| `unknownFieldInRequestBodySchema` | `"unknown-field-in-request-body"` | `debugMessage: string` |
+| `requestBodyTooLargeSchema` | `"request-body-too-large"` | `limit: number` |
+| `emptyRequestBodySchema` | `"empty-request-body"` | `debugMessage: string` |
+
+---
+
+### Permission Schemas
+
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `permissionDeniedSchema` | `"permission-denied"` | `permissionKey: string`, `permissionCode: string` |
+| `workspaceNotFoundSchema` | `"workspace-not-found"` | None |
+
+---
+
+### Request Parameters Schemas
+
+| Schema | Error Code | Additional Fields |
+| --- | --- | --- |
+| `invalidIDSchema` | `"invalid-id"` | `key: string` |

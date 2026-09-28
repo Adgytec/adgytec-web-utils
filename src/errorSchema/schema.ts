@@ -6,7 +6,7 @@ import { formValidationFailedSchema } from "./form";
 import { duplicateMediaIDSchema, mediaTooLargeSchema } from "./media";
 import {
     actorForbiddenSchema,
-    actorNotInWorkspace,
+    actorNotInWorkspaceSchema,
     invalidAuthHeaderSchema,
     moduleNotInWorkspaceSchema,
     unsupportedAuthSchemeSchema,
@@ -33,6 +33,9 @@ import {
 import { permissionDeniedSchema, workspaceNotFoundSchema } from "./permissions";
 import { invalidIDSchema } from "./reqParams";
 
+/**
+ * Comprehensive discriminated union of all supported application error schemas.
+ */
 export const errorSchema = z.discriminatedUnion("code", [
     invalidSignedUrlSchema,
     invalidJWTSchema,
@@ -51,7 +54,7 @@ export const errorSchema = z.discriminatedUnion("code", [
 
     workspaceForbiddenSchema,
     actorForbiddenSchema,
-    actorNotInWorkspace,
+    actorNotInWorkspaceSchema,
     unsupportedAuthSchemeSchema,
     invalidAuthHeaderSchema,
     moduleNotInWorkspaceSchema,
@@ -73,9 +76,19 @@ export const errorSchema = z.discriminatedUnion("code", [
     emptyRequestBodySchema,
 ]);
 
+/**
+ * Union type of all valid error code strings.
+ */
 export type ErrorCode = z.infer<typeof errorSchema>["code"];
+
+/**
+ * Union type of all validated error payload shapes.
+ */
 export type ErrorDetails = z.infer<typeof errorSchema>;
 
+/**
+ * Error payload shapes after default overrides are mapped/collapsed to `unexpected-error`.
+ */
 export type ErrorDetailsNormalized = Exclude<
     ErrorDetails,
     {

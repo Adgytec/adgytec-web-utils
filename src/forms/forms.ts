@@ -73,11 +73,22 @@ type FormValidateResult<T> =
     | FormValidateSuccessResult<T>
     | FormValidateFailureResult;
 
+/**
+ * Function signature for extracting, parsing, and validating HTMLFormElement data.
+ */
 export type ValidateAndGetFormValues = <T extends z.ZodTypeAny>(
     formElement: HTMLFormElement,
     schema: T
 ) => FormValidateResult<z.infer<T>>;
 
+/**
+ * Extracts input values from an HTMLFormElement and validates them against a Zod schema.
+ * Returns either `{ success: true, data }` or `{ success: false, errors }` with flattened field errors.
+ *
+ * @param formElement - The HTMLFormElement whose fields are extracted.
+ * @param schema - The Zod schema against which form values are validated.
+ * @returns Object indicating success with typed data, or failure with flattened field errors.
+ */
 export const validateAndGetFormValues: ValidateAndGetFormValues = (
     formElement,
     schema

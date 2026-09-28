@@ -7,4 +7,4 @@ export * from "./misc";
 export * from "./overrides";
 export * from "./payload";
 export * from "./permissions";
-export * from "./reqParams.ts";
+export * from "./reqParams";

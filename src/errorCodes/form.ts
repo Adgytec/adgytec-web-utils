@@ -1,7 +1,13 @@
+/**
+ * Error codes for form-level validation failures.
+ */
 export const formCodes = {
     formValidationFailed: "validation-failed",
 } as const;
 
+/**
+ * Error codes describing granular field validation issues within form input models.
+ */
 export const fieldValidationCodes = {
     unknown: "unknown-error",
 

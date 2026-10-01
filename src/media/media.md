@@ -139,15 +139,15 @@ An `ApplicationError` subclass thrown when a client-side file selection exceeds 
 ```ts
 import { MediaTooLargeError } from "adgytec-web-utils";
 
-function validateFileSize(file: File, maxSize: number) {
-  if (file.size > maxSize) {
-    throw new MediaTooLargeError(file, maxSize);
+function validateFileSize(file: File, maxSupportedSize: number) {
+  if (file.size > maxSupportedSize) {
+    throw new MediaTooLargeError(file, maxSupportedSize);
   }
 }
 ```
 
 - **Error Code**: `"media-too-large"`
-- **Payload Details**: `{ file: File, size: number, maxSize: number, code: "media-too-large" }`
+- **Payload Details**: `{ file: File, size: number, maxSupportedSize: number, code: "media-too-large" }`
 
 ---
 

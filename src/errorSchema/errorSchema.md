@@ -99,7 +99,7 @@ async function handleAction() {
 
 | Schema | Error Code | Additional Fields |
 | --- | --- | --- |
-| `mediaTooLargeSchema` | `"media-too-large"` | `mediaID: string`, `size: number`, `maxSupportedSize: number` |
+| `mediaTooLargeSchema` | `"media-too-large"` | `file?: File`, `mediaID?: string`, `size: number`, `maxSupportedSize: number` |
 | `duplicateMediaIDSchema` | `"duplicate-media-id"` | `mediaID: string` |
 
 ---

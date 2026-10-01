@@ -1,5 +1,5 @@
+import { Headers, MimeTypes } from "http-constants-ts";
 import type z from "zod";
-import { httpReqHeaders } from "../constants";
 import { miscCodes } from "../errorCodes";
 import { ApplicationError } from "../errors";
 import { parseErrorResponse } from "./errorResponse";
@@ -48,12 +48,10 @@ export async function decodeAPIResponse<T>(
 
     let payload: unknown;
     if (raw.length > 0) {
-        const contentType = res.headers.get("content-type")?.toLowerCase();
-        if (
-            !contentType?.includes(
-                httpReqHeaders.contentType.valueApplicationJSON
-            )
-        ) {
+        const contentType = res.headers
+            .get(Headers.CONTENT_TYPE)
+            ?.toLowerCase();
+        if (!contentType?.includes(MimeTypes.APPLICATION_JSON)) {
             throw new ApplicationError(miscCodes.invalidResponseShape, {
                 response: res,
             });

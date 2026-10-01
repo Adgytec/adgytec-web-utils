@@ -24,10 +24,10 @@ Validates temporary cloud and object storage credentials.
 
 ```ts
 export const CredentialsSchema = z.object({
-  accessKeyID: z.string().nullable(),
-  expiration: z.coerce.date().nullable(),
-  secretAccessKey: z.string().nullable(),
-  sessionToken: z.string().nullable(),
+  accessKeyID: z.string().nullish(),
+  expiration: z.coerce.date().nullish(),
+  secretAccessKey: z.string().nullish(),
+  sessionToken: z.string().nullish(),
 });
 
 export type Credentials = z.infer<typeof CredentialsSchema>;
@@ -35,10 +35,10 @@ export type Credentials = z.infer<typeof CredentialsSchema>;
 
 #### Fields
 
-- `accessKeyID` (`string | null`): The access key identifier for the temporary session or service account, or `null` if unauthenticated or omitted.
-- `expiration` (`Date | null`): The timestamp when the credentials expire, coerced to a JavaScript `Date` instance, or `null` if no expiration is specified.
-- `secretAccessKey` (`string | null`): The secret access key used to sign requests, or `null` if unauthenticated or omitted.
-- `sessionToken` (`string | null`): The security session token (STS token) associated with temporary credentials, or `null` if not required.
+- `accessKeyID` (`string | null | undefined`): The access key identifier for the temporary session or service account, or `null`/`undefined` if unauthenticated or omitted.
+- `expiration` (`Date | null | undefined`): The timestamp when the credentials expire, coerced to a JavaScript `Date` instance, or `null`/`undefined` if no expiration is specified.
+- `secretAccessKey` (`string | null | undefined`): The secret access key used to sign requests, or `null`/`undefined` if unauthenticated or omitted.
+- `sessionToken` (`string | null | undefined`): The security session token (STS token) associated with temporary credentials, or `null`/`undefined` if not required.
 
 ---
 

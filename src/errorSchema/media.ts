@@ -6,7 +6,8 @@ import { mediaCodes } from "../errorCodes";
  */
 export const mediaTooLargeSchema = z.object({
     code: z.literal(mediaCodes.mediaTooLarge),
-    file: z.file(),
+    file: z.file().optional(),
+    mediaID: z.string().optional(),
     size: z.int(),
     maxSupportedSize: z.int(),
 });

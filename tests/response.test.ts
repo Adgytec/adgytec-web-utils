@@ -1,14 +1,13 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { Headers, MimeTypes } from "http-constants-ts";
 import * as z from "zod";
-import { httpReqHeaders } from "../src/constants";
 import { mediaCodes, miscCodes } from "../src/errorCodes";
 import { ApplicationError } from "../src/errors";
 import { decodeAPIResponse } from "../src/response";
 
 const jsonHeaders = {
-    [httpReqHeaders.contentType.key]:
-        httpReqHeaders.contentType.valueApplicationJSON,
+    [Headers.CONTENT_TYPE]: MimeTypes.APPLICATION_JSON,
 };
 
 test("decodeAPIResponse returns null for successful responses without a schema", async () => {
@@ -80,7 +79,7 @@ test("decodeAPIResponse rejects malformed and non-JSON response bodies", async (
         () =>
             decodeAPIResponse(
                 new Response("plain text", {
-                    headers: { [httpReqHeaders.contentType.key]: "text/plain" },
+                    headers: { [Headers.CONTENT_TYPE]: MimeTypes.IMAGE_PLAIN },
                 }),
                 schema
             ),

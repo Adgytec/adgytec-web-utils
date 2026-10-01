@@ -9,9 +9,13 @@ export class MediaTooLargeError extends ApplicationError {
      * Creates a new MediaTooLargeError instance.
      *
      * @param file - The file that exceeded the maximum size limit.
-     * @param maxSize - The maximum supported file size in bytes.
+     * @param maxSupportedSize - The maximum supported file size in bytes.
      */
-    constructor(file: File, maxSize: number) {
-        super(mediaCodes.mediaTooLarge, { file, size: file.size, maxSize });
+    constructor(file: File, maxSupportedSize: number) {
+        super(mediaCodes.mediaTooLarge, {
+            file,
+            size: file.size,
+            maxSupportedSize,
+        });
     }
 }

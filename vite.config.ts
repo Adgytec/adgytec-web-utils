@@ -2,8 +2,8 @@ import path, { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { globSync } from "glob";
 import Sonda from "sonda/vite";
+import dts from "unplugin-dts/vite";
 import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
 
 export default defineConfig({
     plugins: [
@@ -16,7 +16,7 @@ export default defineConfig({
     ],
     resolve: {
         alias: {
-            "@": resolve(__dirname, "./src"),
+            "@": resolve(import.meta.dirname, "./src"),
         },
     },
     build: {
@@ -24,7 +24,7 @@ export default defineConfig({
         outDir: "dist",
         copyPublicDir: false,
         lib: {
-            entry: resolve(__dirname, "src/index.ts"),
+            entry: resolve(import.meta.dirname, "src/index.ts"),
             formats: ["es"],
             fileName: "index",
         },

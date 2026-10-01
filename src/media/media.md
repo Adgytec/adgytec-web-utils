@@ -10,12 +10,13 @@ These schemas establish a standard contract between the client application and b
 
 ## Schemas & Types Overview
 
-| Schema | Type | Description |
+| Schema / Class | Type | Description |
 | --- | --- | --- |
 | `SingleUploadDetailsSchema` | `SingleUploadDetails` | Destination bucket, path, region, and credentials for a single media upload target. |
 | `UploadObjectSchema` | `UploadObject` | Individual media item identified by UUID with target bucket and path. |
 | `UploadGroupSchema` | `UploadGroup` | Batch of upload objects sharing common regional configuration and scoped credentials. |
 | `UploadDetailsSchema` | `UploadDetails` | Complete batch upload specification containing one or more upload groups. |
+| `MediaTooLargeError` | Class (`ApplicationError`) | Error thrown when a media file exceeds the maximum allowed file size. |
 
 ---
 
@@ -126,6 +127,27 @@ export type UploadDetails = z.infer<typeof UploadDetailsSchema>;
 #### Fields
 
 - `groups` (`UploadGroup[]`): Collection of upload groups comprising the batch upload manifest.
+
+---
+
+## Errors & Validation
+
+### `MediaTooLargeError`
+
+An `ApplicationError` subclass thrown when a client-side file selection exceeds the maximum allowed file size.
+
+```ts
+import { MediaTooLargeError } from "adgytec-web-utils";
+
+function validateFileSize(file: File, maxSize: number) {
+  if (file.size > maxSize) {
+    throw new MediaTooLargeError(file, maxSize);
+  }
+}
+```
+
+- **Error Code**: `"media-too-large"`
+- **Payload Details**: `{ file: File, size: number, maxSize: number, code: "media-too-large" }`
 
 ---
 
